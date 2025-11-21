@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Predictions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .player-row {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .player-row:hover {
+            background-color: #f9fafb;
+            padding-left: 4px;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .badge-home {
+            background-color: #dbeafe;
+            color: #0369a1;
+        }
+        
+        .badge-away {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+        
+        .badge-injured {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .prediction-score {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(118, 75, 162, 0.9) 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header-gradient text-white py-6 shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <h1 class="text-3xl font-bold mb-2">⚽ Fantasy Football Predictions</h1>
+                <p class="text-indigo-100">ML-powered player performance forecasts</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <!-- Gameweek Selector -->
+            <div class="card p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Select Gameweek</label>
+                        <input type="number" id="gameweekInput" min="1" max="38" value="37" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Show Top Players</label>
+                        <select id="topPlayersSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                            <option value="10">Top 10</option>
+                            <option value="20" selected>Top 20</option>
+                            <option value="50">Top 50</option>
+                            <option value="100">Top 100</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="loadPredictions()" 
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+                            Load Predictions
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card card p-6">
+                    <p class="text-indigo-100 text-sm">Gameweek</p>
+                    <p class="text-3xl font-bold" id="currentGW">-</p>
+                </div>
+                <div class="stat-card card p-6">
+                    <p class="text-indigo-100 text-sm">Predictions</p>
+                    <p class="text-3xl font-bold" id="predictionCount">0</p>
+                </div>
+                <div class="stat-card card p-6">
+                    <p class="text-indigo-100 text-sm">Injured Players</p>
+                    <p class="text-3xl font-bold" id="injuredCount">0</p>
+                </div>
+                <div class="stat-card card p-6">
+                    <p class="text-indigo-100 text-sm">Avg Prediction</p>
+                    <p class="text-3xl font-bold" id="avgPrediction">-</p>
+                </div>
+            </div>
+
+            <!-- Predictions Table -->
+            <div class="card p-6 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Top Player Predictions</h2>
+                <div id="loadingSpinner" class="text-center py-8">
+                    <div class="inline-block animate-spin">
+                        <div class="h-8 w-8 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
+                    </div>
+                    <p class="text-gray-600 mt-2">Loading predictions...</p>
+                </div>
+                <div id="predictionsTable" style="display:none;">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Rank</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Player</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Team</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Position</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Opponent</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Location</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Predicted Pts</th>
+                                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Recent Form</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playerTableBody">
+                                <!-- Dynamically filled -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Injured Players Section -->
+            <div id="injuredSection" style="display:none;" class="card p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span class="text-2xl mr-2">⚠️</span> Injured/Unavailable Players
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-red-50">
+                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Player</th>
+                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+                                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Expected Return</th>
+                            </tr>
+                        </thead>
+                        <tbody id="injuredTableBody">
+                            <!-- Dynamically filled -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+
+        async function loadPredictions() {
+            const gameweek = document.getElementById('gameweekInput').value;
+            const topPlayers = document.getElementById('topPlayersSelect').value;
+            
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('predictionsTable').style.display = 'none';
+            document.getElementById('injuredSection').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/predict/?gameweek=${gameweek}&top_n=${topPlayers}`);
+                const data = await response.json();
+                
+                renderPredictions(data, gameweek);
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+                alert('Failed to load predictions. Make sure the API is running on http://localhost:8000');
+            } finally {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('predictionsTable').style.display = 'block';
+            }
+        }
+
+        function renderPredictions(data, gameweek) {
+            const predictions = data.predictions || [];
+            const injured = data.injured_players || [];
+            
+            // Update stats
+            document.getElementById('currentGW').textContent = gameweek;
+            document.getElementById('predictionCount').textContent = predictions.length;
+            document.getElementById('injuredCount').textContent = injured.length;
+            
+            if (predictions.length > 0) {
+                const avgPoints = (predictions.reduce((sum, p) => sum + p.predicted_points, 0) / predictions.length).toFixed(2);
+                document.getElementById('avgPrediction').textContent = avgPoints;
+            }
+            
+            // Render predictions table
+            const tbody = document.getElementById('playerTableBody');
+            tbody.innerHTML = '';
+            
+            predictions.forEach((player, index) => {
+                const row = document.createElement('tr');
+                row.className = 'player-row';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">${index + 1}</td>
+                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">${player.player_name}</td>
+                    <td class="px-6 py-4 text-sm">${player.team}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="badge" style="background-color: ${getPositionColor(player.position)}">${player.position}</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm">${player.opponent}</td>
+                    <td class="px-6 py-4 text-sm">
+                        <span class="badge ${player.is_home === 'HOME' ? 'badge-home' : 'badge-away'}">
+                            ${player.is_home === 'HOME' ? '🏠 Home' : '✈️ Away'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="prediction-score">${player.predicted_points.toFixed(2)}</span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-600">${player.avg_last_5.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Render injured players if any
+            if (injured.length > 0) {
+                document.getElementById('injuredSection').style.display = 'block';
+                const injuredBody = document.getElementById('injuredTableBody');
+                injuredBody.innerHTML = '';
+                
+                injured.slice(0, 20).forEach(player => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b';
+                    row.innerHTML = `
+                        <td class="px-6 py-4 text-sm font-semibold text-gray-900">${player.player_name}</td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="badge badge-injured">${player.status || 'Unknown'}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            ${player.expected_return ? `GW ${player.expected_return}` : 'TBD'}
+                        </td>
+                    `;
+                    injuredBody.appendChild(row);
+                });
+            }
+        }
+
+        function getPositionColor(position) {
+            const colors = {
+                'GKP': '#dbeafe',
+                'DEF': '#d1fae5',
+                'MID': '#fef3c7',
+                'FWD': '#fee2e2'
+            };
+            return colors[position] || '#f3f4f6';
+        }
+
+        // Load predictions on page load
+        window.addEventListener('load', () => {
+            loadPredictions();
+        });
+    </script>
+</body>
+</html>

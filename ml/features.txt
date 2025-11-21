@@ -1,0 +1,8 @@
+avg_points_last_5
+avg_points_last_10
+form
+opponent_difficulty
+is_home
+minutes_consistency
+goal_threat
+injury_risk

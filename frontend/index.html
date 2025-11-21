@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Predictor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #37003c; /* PL Purple */
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #00ff85; /* PL Green */
+            color: #37003c;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .points {
+            font-weight: bold;
+            color: #37003c;
+        }
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Fantasy Predictor - Next GW</h1>
+        <div id="loading" class="loading">Loading predictions...</div>
+        <table id="predictionsTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Player</th>
+                    <th>Position</th>
+                    <th>Predicted Points</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Rows will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchPredictions() {
+            try {
+                const response = await fetch('http://localhost:8000/predict/');
+                const data = await response.json();
+                
+                const tableBody = document.getElementById('tableBody');
+                const loading = document.getElementById('loading');
+                const table = document.getElementById('predictionsTable');
+                
+                loading.style.display = 'none';
+                table.style.display = 'table';
+                
+                data.forEach((player, index) => {
+                    const row = document.createElement('tr');
+                    
+                    const posMap = {1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD'};
+                    
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${player.player_name}</td>
+                        <td>${posMap[player.position] || player.position}</td>
+                        <td class="points">${player.predicted_points.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching predictions:', error);
+                document.getElementById('loading').innerText = 'Failed to load predictions. Ensure backend is running.';
+            }
+        }
+
+        fetchPredictions();
+    </script>
+
+</body>
+</html>
