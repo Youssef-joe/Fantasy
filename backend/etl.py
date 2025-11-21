@@ -122,7 +122,10 @@ def etl_process():
                         minutes=match['minutes'],
                         goals_scored=match['goals_scored'],
                         assists=match['assists'],
-                        total_points=match['total_points']
+                        total_points=match['total_points'],
+                        xG=match.get('expected_goals'),
+                        xA=match.get('expected_assists'),
+                        shots=match.get('shots_on_target')
                     )
                     # Check if exists (composite key check would be better, but for now simple check)
                     # Assuming we don't have a unique constraint on player_id + fixture_id in models yet, 

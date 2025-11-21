@@ -1,7 +1,9 @@
 import os
 import json
 import logging
+import asyncio
 from fpl_client import FPLClient
+from understat_scraper import UnderstatScraper
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -47,7 +49,28 @@ def main():
         except Exception as e:
             logger.error(f"Failed to fetch summary for player {player_id}: {e}")
 
+    # Scrape Understat xG data
+    logger.info("Fetching Understat xG data...")
+    try:
+        asyncio.run(scrape_understat_data())
+    except Exception as e:
+        logger.error(f"Failed to fetch Understat data: {e}")
+
     logger.info("Scraping completed successfully.")
+
+async def scrape_understat_data():
+    """Fetch xG, xA, and minutes data from Understat"""
+    scraper = UnderstatScraper()
+    
+    # Get player stats for the season
+    logger.info("Fetching player shot map and stats from Understat...")
+    player_stats = await scraper.get_player_stats()
+    save_json(player_stats, 'understat_player_stats.json')
+    
+    # Get team stats
+    logger.info("Fetching team stats from Understat...")
+    team_stats = await scraper.get_team_stats()
+    save_json(team_stats, 'understat_team_stats.json')
 
 if __name__ == "__main__":
     main()

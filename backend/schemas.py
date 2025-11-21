@@ -52,6 +52,9 @@ class PlayerStatsBase(BaseModel):
     goals_scored: int
     assists: int
     total_points: int
+    xG: Optional[float] = None
+    xA: Optional[float] = None
+    shots: Optional[int] = None
 
 class PlayerStatsCreate(PlayerStatsBase):
     pass
@@ -70,6 +73,22 @@ class ModelFeaturesBase(BaseModel):
     opponent_difficulty: int
     is_home: int
     minutes_consistency: float
+    
+    # Minutes & Playing Time Features
+    avg_minutes_last_5: Optional[float] = None
+    minutes_trend: Optional[float] = None
+    minutes_variance: Optional[float] = None
+    games_with_minutes: Optional[float] = None
+    
+    # Understat Advanced Features
+    avg_xG_last_5: Optional[float] = None
+    avg_xA_last_5: Optional[float] = None
+    avg_shots_last_5: Optional[float] = None
+    xG_outperformance: Optional[float] = None
+    
+    # Team Context
+    team_xG: Optional[float] = None
+    opponent_xGA: Optional[float] = None
 
 class ModelFeaturesCreate(ModelFeaturesBase):
     pass

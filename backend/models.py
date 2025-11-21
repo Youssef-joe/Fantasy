@@ -45,6 +45,11 @@ class PlayerStats(Base):
     assists = Column(Integer)
     total_points = Column(Integer)
     
+    # Understat advanced stats
+    xG = Column(Float, nullable=True)  # Expected Goals
+    xA = Column(Float, nullable=True)  # Expected Assists
+    shots = Column(Integer, nullable=True)  # Number of shots
+    
     player = relationship("Player", back_populates="stats")
 
 class ModelFeatures(Base):
@@ -54,12 +59,28 @@ class ModelFeatures(Base):
     player_id = Column(Integer, ForeignKey("players.id"))
     fixture_id = Column(Integer, ForeignKey("fixtures.id"))
     
-    # Features
+    # Traditional Features
     avg_points_last_5 = Column(Float)
     form = Column(Float)
     opponent_difficulty = Column(Integer)
-    is_home = Column(Integer) # 1 for home, 0 for away
+    is_home = Column(Integer)  # 1 for home, 0 for away
     minutes_consistency = Column(Float)
+    
+    # Minutes & Playing Time Features
+    avg_minutes_last_5 = Column(Float, nullable=True)  # Average minutes played last 5 games
+    minutes_trend = Column(Float, nullable=True)  # Trend: are minutes increasing or decreasing?
+    minutes_variance = Column(Float, nullable=True)  # Variance in minutes (rotation risk)
+    games_with_minutes = Column(Float, nullable=True)  # % of games where player got >0 minutes
+    
+    # Understat Advanced Features
+    avg_xG_last_5 = Column(Float, nullable=True)  # Average expected goals
+    avg_xA_last_5 = Column(Float, nullable=True)  # Average expected assists
+    avg_shots_last_5 = Column(Float, nullable=True)  # Average shots on target/total
+    xG_outperformance = Column(Float, nullable=True)  # Goals - xG (finishing quality)
+    
+    # Team Context
+    team_xG = Column(Float, nullable=True)  # Team's xG in last match
+    opponent_xGA = Column(Float, nullable=True)  # Opponent's xGA (defensive weakness)
     
     player = relationship("Player")
     fixture = relationship("Fixture")
