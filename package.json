@@ -1,0 +1,23 @@
+{
+  "name": "fantasy-football-cli",
+  "version": "1.0.0",
+  "description": "CLI tool for the Fantasy Football Prediction System",
+  "main": "bin/cli.js",
+  "bin": {
+    "fantasy-cli": "bin/cli.js"
+  },
+  "scripts": {
+    "start": "node bin/cli.js"
+  },
+  "keywords": ["fantasy", "football", "ml", "predictions", "cli"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "ora": "^6.0.0",
+    "chalk": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
