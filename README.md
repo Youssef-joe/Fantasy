@@ -13,7 +13,7 @@ pip install -r ml/requirements.txt
 ```
 
 ### CLI Tool (Optional)
-Install the CLI globally for easy command access:
+Install the CLI globally for easy command access with animated spinners, branded logo, and colored feedback:
 ```bash
 npm install -g .
 ```
@@ -43,6 +43,8 @@ frontend/dashboard.html
 ```
 
 Using the CLI (after npm install -g):
+The CLI features animated spinners, a branded logo, and colored feedback for an enhanced user experience.
+
 ```bash
 # 1. Scrape data
 fantasy-cli scrape
