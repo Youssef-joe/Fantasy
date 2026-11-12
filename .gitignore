@@ -3,6 +3,7 @@ __pycache__/
 .env
 venv/
 .DS_Store
-data/
+/data/
+!frontend/data/
 node_modules/
 .next/
