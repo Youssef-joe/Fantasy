@@ -104,8 +104,6 @@ def calculate_features():
 
         print("Feature Engineering completed successfully.")
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
     finally:
         db.close()
 

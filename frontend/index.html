@@ -854,7 +854,7 @@
                     <!-- Gameweek Select -->
                     <div class="flex items-center gap-2 bg-black/60 px-3.5 py-2 rounded-xl border border-white/10">
                         <span class="text-xs text-zinc-400 font-semibold font-mono">GW:</span>
-                        <input type="number" id="gwInput" min="1" max="38" value="38" 
+                        <input type="number" id="gwInput" min="1" max="38" value="" 
                                class="w-12 bg-transparent text-white font-bold font-mono text-sm focus:outline-none text-center">
                     </div>
                     <!-- Position Filter -->
@@ -1398,13 +1398,13 @@
         let activePosFilter = 'ALL';
 
         async function fetchPredictions() {
-            const gw = document.getElementById('gwInput').value || 38;
+            const gw = document.getElementById('gwInput').value;
             const statusBadge = document.getElementById('apiStatusBadge');
             
             // Step 1: Static prediction feed
             try {
-                statusBadge.textContent = "Loading Global CDN Feed...";
-                let staticUrl = `data/predictions/gw${gw}.json`;
+                statusBadge.textContent = "Loading predictions…";
+                let staticUrl = gw ? `data/predictions/gw${gw}.json` : 'data/predictions/latest.json';
                 let res = await fetch(staticUrl);
                 if (!res.ok) {
                     // Try latest.json fallback
@@ -1413,7 +1413,7 @@
                 if (res.ok) {
                     const data = await res.json();
                     allPredictions = data.predictions || [];
-                    statusBadge.textContent = "Vercel Edge Feed (GW" + (data.gameweek || gw) + " • 0ms Latency)";
+                    statusBadge.textContent = `GW${data.gameweek} predictions • updated ${data.generated_at ? new Date(data.generated_at).toLocaleString() : 'unknown'}`;
                     statusBadge.className = "text-emerald-400 font-bold";
                     renderPredictionsTable();
                     return;
@@ -1424,7 +1424,7 @@
 
             // Step 2: In-memory fallback
             allPredictions = SAMPLE_PREDICTIONS;
-            statusBadge.textContent = "Edge Demo Mode (Seeded Dataset)";
+            statusBadge.textContent = "Feed unavailable: showing sample data";
             statusBadge.className = "text-brand-gold font-bold";
             renderPredictionsTable();
         }
@@ -1483,7 +1483,7 @@
                                 ${p.team}
                             </div>
                             <div>
-                                <div class="font-bold text-white text-sm">${p.player_name}</div>
+                                <div class="font-bold text-white text-sm" title="${p.player_name}">${p.web_name || p.player_name}</div>
                                 <div class="text-[10px] text-zinc-500 font-mono">${p.team}</div>
                             </div>
                         </div>
