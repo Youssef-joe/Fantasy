@@ -4,7 +4,9 @@ Trains a Random Forest model on engineered features to predict player points.
 """
 import os
 import sys
+import json
 import joblib
+from datetime import datetime, timezone
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
@@ -124,6 +126,26 @@ def train_model(model_type: str = 'random_forest', test_size: float = 0.2):
         with open(features_path, 'w') as f:
             f.write('\n'.join(X.columns))
         print(f"✓ Feature names saved to: {features_path}")
+
+        # Save measured metrics; the exported feed reports these instead of hardcoded numbers.
+        # Baseline: predict each player's average points over their previous 5 matches.
+        baseline_mae = mean_absolute_error(y_test, X_test['avg_points_last_5'])
+        metrics = {
+            'model_type': type(model).__name__,
+            'n_estimators': getattr(model, 'n_estimators', None),
+            'split': 'random',
+            'n_train': int(len(X_train)),
+            'n_test': int(len(X_test)),
+            'test_mae': round(float(test_mae), 3),
+            'test_rmse': round(float(test_rmse), 3),
+            'test_r2': round(float(test_r2), 3),
+            'baseline_mae_avg_last_5': round(float(baseline_mae), 3),
+            'trained_at': datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
+        }
+        metrics_path = os.path.join(model_dir, 'metrics.json')
+        with open(metrics_path, 'w') as f:
+            json.dump(metrics, f, indent=2)
+        print(f"✓ Metrics saved to: {metrics_path} (baseline MAE {baseline_mae:.4f})")
         
         print("\n" + "=" * 60)
         print("TRAINING COMPLETED SUCCESSFULLY")

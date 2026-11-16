@@ -30,10 +30,3 @@ class FPLClient:
         response = self.session.get(url)
         response.raise_for_status()
         return response.json()
-    
-    def get_team_stats(self, team_id):
-        """Fetches detailed stats for a team"""
-        url = f"{self.BASE_URL}/teams/{team_id}/"
-        response = self.session.get(url)
-        response.raise_for_status()
-        return response.json()

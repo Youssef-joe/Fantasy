@@ -15,9 +15,7 @@ from backend.database import SessionLocal
 from backend import models
 
 # Import from same directory
-import os
-current_dir = os.path.dirname(__file__)
-sys.path.insert(0, current_dir)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from feature_engineering import engineer_features_for_player_fixture
 
 
@@ -43,141 +41,125 @@ def load_model_and_features(model_dir: str = None):
     return model, features
 
 
+POSITION_MAP = {1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD'}
+
+
 def predict_gameweek(db: Session, gameweek: int = None, top_n: int = 20, include_injured: bool = False):
     """
-    Predict player points for a specific gameweek (or next upcoming).
-    
+    Predict player points for a gameweek.
+
     Args:
         db: Database session
-        gameweek: Gameweek number (if None, predicts next gameweek)
-        top_n: Number of top predictions to return
-        include_injured: Include injured players in predictions
-    
+        gameweek: Gameweek number. If None, uses the next gameweek according to
+            FPL (bootstrap-static `is_next`).
+        top_n: Number of top predictions to return (None = all players)
+        include_injured: Include unavailable players in predictions
+
     Returns:
         tuple: (predictions list, injured_players list)
+
+    Players with two fixtures in the gameweek (a double gameweek) get one row
+    with the points of both fixtures added together.
+    Errors are raised rather than swallowed, so callers never mistake a
+    failure for an empty gameweek.
     """
-    try:
-        model, feature_names = load_model_and_features()
-        
-        # Determine gameweek to predict
+    from season import load_season_info
+
+    model, feature_names = load_model_and_features()
+
+    if gameweek is None:
+        gameweek = load_season_info()['next_gameweek']
         if gameweek is None:
-            max_event = db.query(func.max(models.Fixture.event)).scalar()
-            gameweek = (max_event or 0) + 1
-        
-        print(f"\nPredicting for Gameweek {gameweek}...")
-        
-        # Get fixtures for this gameweek
-        fixtures = db.query(models.Fixture).filter(
-            models.Fixture.event == gameweek
-        ).all()
-        
-        if not fixtures:
-            print(f"No fixtures found for gameweek {gameweek}")
-            return [], []
-        
-        predictions = []
-        injured_players = []
-        
-        for fixture in fixtures:
-            # Get all players from both teams
-            home_players = db.query(models.Player).filter(
-                models.Player.team_id == fixture.team_h
-            ).all()
-            away_players = db.query(models.Player).filter(
-                models.Player.team_id == fixture.team_a
-            ).all()
-            
-            all_fixture_players = [
-                (p, 1, fixture.team_a, fixture) for p in home_players
-            ] + [
-                (p, 0, fixture.team_h, fixture) for p in away_players
-            ]
-            
-            for player, is_home, opponent_id, fixture in all_fixture_players:
-                # Check injury status
-                injury = db.query(models.InjuryStatus).filter(
-                    models.InjuryStatus.player_id == player.id
-                ).first()
-                
-                if injury and injury.is_injured:
-                    if not include_injured:
-                        injured_players.append({
-                            'player_id': player.id,
-                            'player_name': f"{player.first_name} {player.second_name}",
-                            'status': injury.injury_status_name,
-                            'expected_return': injury.expected_return
-                        })
-                        continue
-                # Get player's historical stats
-                historical_stats = db.query(models.PlayerStats).join(
-                    models.Fixture
-                ).filter(
-                    models.PlayerStats.player_id == player.id,
-                    models.Fixture.event < gameweek  # Only past matches
-                ).order_by(models.Fixture.event).all()
-                
-                points_history = [s.total_points for s in historical_stats]
-                minutes_history = [s.minutes for s in historical_stats]
-                
-                # Engineer features
-                features = engineer_features_for_player_fixture(
-                    player.id,
-                    fixture.id,
-                    db,
-                    points_history,
-                    minutes_history
-                )
-                
-                if features is None:
-                    continue
-                
-                # Prepare feature vector
-                feature_dict = {k: v for k, v in features.items()}
-                
-                # Ensure features are in correct order
-                if feature_names:
-                    X = pd.DataFrame([feature_dict])[feature_names]
-                else:
-                    X = pd.DataFrame([feature_dict])
-                
-                # Make prediction
-                predicted_points = float(model.predict(X)[0])
-                
-                # Ensure non-negative predictions
-                predicted_points = max(0, predicted_points)
-                
-                # Get team info
-                team = db.query(models.Team).filter(
-                    models.Team.id == player.team_id
-                ).first()
-                opponent = db.query(models.Team).filter(
-                    models.Team.id == opponent_id
-                ).first()
-                
-                position_map = {1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD'}
-                
-                predictions.append({
+            raise RuntimeError("FPL reports no upcoming gameweek (season finished?)")
+
+    print(f"\nPredicting for Gameweek {gameweek}...")
+
+    fixtures = db.query(models.Fixture).filter(models.Fixture.event == gameweek).all()
+    if not fixtures:
+        print(f"No fixtures found for gameweek {gameweek}")
+        return [], []
+
+    teams = {t.id: t for t in db.query(models.Team).all()}
+    injuries = {i.player_id: i for i in db.query(models.InjuryStatus).all()}
+
+    by_player = {}
+    injured_players = {}
+
+    for fixture in fixtures:
+        home_players = db.query(models.Player).filter(models.Player.team_id == fixture.team_h).all()
+        away_players = db.query(models.Player).filter(models.Player.team_id == fixture.team_a).all()
+
+        fixture_players = (
+            [(p, 1, fixture.team_a) for p in home_players]
+            + [(p, 0, fixture.team_h) for p in away_players]
+        )
+
+        for player, is_home, opponent_id in fixture_players:
+            team = teams.get(player.team_id)
+            opponent = teams.get(opponent_id)
+            injury = injuries.get(player.id)
+
+            if injury and injury.is_injured and not include_injured:
+                injured_players[player.id] = {
                     'player_id': player.id,
                     'player_name': f"{player.first_name} {player.second_name}",
                     'team': team.short_name if team else 'UNK',
-                    'opponent': opponent.short_name if opponent else 'UNK',
-                    'position': position_map.get(player.position, 'UNK'),
-                    'is_home': 'HOME' if is_home else 'AWAY',
+                    'position': POSITION_MAP.get(player.position, 'UNK'),
+                    'status': injury.injury_status_name,
+                }
+                continue
+
+            historical_stats = db.query(models.PlayerStats).join(models.Fixture).filter(
+                models.PlayerStats.player_id == player.id,
+                models.Fixture.event < gameweek,  # only past matches
+            ).order_by(models.Fixture.event).all()
+
+            points_history = [s.total_points for s in historical_stats]
+            minutes_history = [s.minutes for s in historical_stats]
+
+            features = engineer_features_for_player_fixture(
+                player.id, fixture.id, db, points_history, minutes_history
+            )
+            if features is None:
+                continue
+
+            X = pd.DataFrame([features])
+            if feature_names:
+                X = X[feature_names]
+            predicted_points = max(0.0, float(model.predict(X)[0]))
+
+            opp_label = opponent.short_name if opponent else 'UNK'
+            venue = 'HOME' if is_home else 'AWAY'
+
+            row = by_player.get(player.id)
+            if row is None:
+                by_player[player.id] = {
+                    'player_id': player.id,
+                    'player_name': f"{player.first_name} {player.second_name}",
+                    'team': team.short_name if team else 'UNK',
+                    'position': POSITION_MAP.get(player.position, 'UNK'),
+                    'opponent': opp_label,
+                    'is_home': venue,
+                    'fixtures': [{'opponent': opp_label, 'is_home': venue, 'predicted_points': round(predicted_points, 2)}],
                     'predicted_points': predicted_points,
-                    'avg_last_5': round(np.mean(points_history[-5:]), 2) if points_history else 0,
-                    'injury_status': None  # No injury
-                })
-        
-        # Sort by predicted points
-        predictions.sort(key=lambda x: x['predicted_points'], reverse=True)
-        
-        return predictions[:top_n], injured_players
-    
-    except Exception as e:
-        print(f"Error during prediction: {e}")
-        import traceback
-        traceback.print_exc()
-        return [], []
+                    'avg_last_5': round(float(np.mean(points_history[-5:])), 2) if points_history else 0.0,
+                    'status': injury.injury_status_name if injury else None,
+                }
+            else:
+                # Double gameweek: add the second fixture to the same row
+                row['fixtures'].append({'opponent': opp_label, 'is_home': venue, 'predicted_points': round(predicted_points, 2)})
+                row['predicted_points'] += predicted_points
+                row['opponent'] = ', '.join(f['opponent'] for f in row['fixtures'])
+                row['is_home'] = '/'.join(f['is_home'] for f in row['fixtures'])
+
+    predictions = list(by_player.values())
+    for p in predictions:
+        p['predicted_points'] = round(p['predicted_points'], 2)
+    predictions.sort(key=lambda x: x['predicted_points'], reverse=True)
+
+    if top_n is not None:
+        predictions = predictions[:top_n]
+    return predictions, list(injured_players.values())
 
 
 def print_predictions(predictions, title: str = "PREDICTIONS"):
@@ -222,7 +204,7 @@ if __name__ == "__main__":
             print("INJURED/UNAVAILABLE PLAYERS")
             print("=" * 100)
             for inj in injured[:10]:
-                print(f"  {inj['player_name']:<30} {inj['status']:<15} (Return: GW{inj['expected_return']})")
+                print(f"  {inj['player_name']:<30} {inj['team']:<5} {inj['status'] or '':<15}")
             print("=" * 100)
     finally:
         db.close()

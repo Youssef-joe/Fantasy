@@ -86,12 +86,13 @@ program.command('train')
 
 program.command('predict')
   .description('Generate predictions')
-  .option('-g, --gameweek <number>', 'Gameweek number', 37)
+  .option('-g, --gameweek <number>', 'Gameweek number (default: next gameweek)')
   .option('-t, --top <number>', 'Top N players', 20)
   .option('-i, --show-injured', 'Show injured players')
   .action((options) => {
-    const spinner = ora(chalk.cyan(`Generating predictions for GW${options.gameweek}, top ${options.top}...`)).start();
-    let cmd = `python ml/predict.py --gameweek ${options.gameweek} --top ${options.top}`;
+    const spinner = ora(chalk.cyan(`Generating predictions for ${options.gameweek ? `GW${options.gameweek}` : 'the next gameweek'}, top ${options.top}...`)).start();
+    let cmd = `python ml/predict.py --top ${parseInt(options.top, 10)}`;
+    if (options.gameweek) cmd += ` --gameweek ${parseInt(options.gameweek, 10)}`;
     if (options.showInjured) cmd += ' --show-injured';
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
@@ -106,10 +107,11 @@ program.command('predict')
 
 program.command('export')
   .description('Export predictions to the static JSON feed in frontend/data/predictions')
-  .requiredOption('-g, --gameweek <number>', 'Gameweek number')
+  .option('-g, --gameweek <number>', 'Gameweek number (default: next gameweek)')
   .action((options) => {
-    const spinner = ora(chalk.cyan(`Exporting predictions for GW${options.gameweek}...`)).start();
-    const cmd = `python ml/export_predictions.py ${parseInt(options.gameweek, 10)}`;
+    const gw = options.gameweek ? parseInt(options.gameweek, 10) : null;
+    const spinner = ora(chalk.cyan(`Exporting predictions for ${gw ? `GW${gw}` : 'the next gameweek'}...`)).start();
+    const cmd = gw ? `python ml/export_predictions.py ${gw}` : 'python ml/export_predictions.py';
     exec(cmd, (error, stdout, stderr) => {
       if (error) {
         spinner.fail(chalk.red(`Export failed: ${error.message}`));

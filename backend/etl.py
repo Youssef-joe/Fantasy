@@ -51,18 +51,27 @@ def etl_process():
             existing = db.query(models.Player).filter(models.Player.id == player_in.id).first()
             if not existing:
                 crud.create_player(db, player_in)
-            
-            # Process injury status
-            status = player_data.get('status', 'a')  # 'a'=available, 'd'=doubtful, 'i'=injured, 'u'=unavailable
+            elif (existing.team_id, existing.position) != (player_in.team_id, player_in.position):
+                # Player changed club (or position) since the last run
+                existing.team_id = player_in.team_id
+                existing.position = player_in.position
+                db.commit()
+
+            # FPL status codes: a=available, d=doubtful, i=injured, s=suspended,
+            # u=unavailable (left club / long-term), n=not eligible (e.g. on loan).
+            # Doubtful players can still play, so they stay in the predictions with a flag.
+            status = player_data.get('status', 'a')
             injury_status_map = {
                 'a': None,
                 'd': 'Doubtful',
                 'i': 'Injured',
-                'u': 'Unavailable'
+                's': 'Suspended',
+                'u': 'Unavailable',
+                'n': 'Not eligible',
             }
-            injury_status_name = injury_status_map.get(status)
-            is_injured = status != 'a'
-            
+            injury_status_name = injury_status_map.get(status, 'Unavailable')
+            is_injured = status in ('i', 's', 'u', 'n')
+
             existing_injury = db.query(models.InjuryStatus).filter(
                 models.InjuryStatus.player_id == player_data['id']
             ).first()
@@ -142,8 +151,6 @@ def etl_process():
 
         print("ETL process completed successfully.")
 
-    except Exception as e:
-        print(f"An error occurred: {e}")
     finally:
         db.close()
 
