@@ -165,6 +165,19 @@ The page then picks the best XI from the squad and searches every legal single t
 
 The best possible top-20 score is 10.5. The numbers from each run are written to `ml/metrics.json` and published in the feed.
 
+**Tried and not adopted (Nov 2026).** Same GW6–10 by-gameweek test, averaged over 3 random seeds:
+
+| Change | Avg error | Top-20 avg points | Verdict |
+|---|---|---|---|
+| Current model | 1.093 | 4.69 | – |
+| + rolling threat, creativity, defensive contributions | 1.105 | 4.71 | worse error |
+| + set-piece / penalty takers | 1.094 | 4.73 | within noise, and the source is an end-of-season snapshot (slightly ahead of time) |
+| + last season's points and xGI per 90 | 1.092 | 4.56 | no gain |
+| Two-stage model (chance of playing × points if playing) | 1.093 | 4.89 | within noise |
+| Slower learning, smaller trees, early stopping | 1.090–1.096 | 4.53–4.84 | within noise |
+
+Top-20 points vary by about ±0.3 between configurations from gameweek-to-gameweek noise alone. Each idea is only worth adopting if it moves clearly beyond that. The likeliest gains now are outside these features: confirmed line-ups and minutes news nearer the deadline, and more gameweeks of this season to test on.
+
 ## Project structure
 
 - `scraper/`: FPL API client and past-season downloader
