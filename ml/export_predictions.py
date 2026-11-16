@@ -82,6 +82,21 @@ def enrich(predictions: list, elements: dict) -> list:
     return predictions
 
 
+def player_index(bootstrap: dict) -> dict:
+    """
+    Every current player, keyed by id: [web_name, team, position, price, status].
+    Lets the site describe any squad, including players without a prediction
+    (ruled out, or no fixture this gameweek). Compact arrays keep it small.
+    """
+    short = {t['id']: t['short_name'] for t in bootstrap['teams']}
+    positions = {1: 'GKP', 2: 'DEF', 3: 'MID', 4: 'FWD'}
+    return {
+        str(el['id']): [el['web_name'], short.get(el['team'], 'UNK'), positions[el['element_type']],
+                        el['now_cost'] / 10, el['status']]
+        for el in bootstrap['elements'] if el['element_type'] in positions
+    }
+
+
 def unavailable_players(bootstrap: dict) -> list:
     """Flagged players who have played this season, straight from FPL status/news."""
     short = {t['id']: t['short_name'] for t in bootstrap['teams']}
@@ -135,23 +150,36 @@ def build_manifest(season: str, latest_gameweek: int, deadline_time: str) -> dic
     }
 
 
-def build_squads(feed: dict, predict_gameweek, budget: float = BUDGET) -> dict:
+def add_horizon_points(predictions: list, gameweek: int, predict_gameweek) -> list:
+    """
+    Add `points_horizon` to each prediction: predicted points summed over the coming
+    HORIZON gameweeks (same model, later fixtures). Used for squad planning and
+    transfer suggestions, where one gameweek is too short-sighted.
+    """
+    gws = [g for g in range(gameweek, gameweek + HORIZON) if g <= 38]
+    totals = {p['player_id']: p['predicted_points'] for p in predictions}
+    for g in gws[1:]:
+        later, _ = predict_gameweek(g, top_n=None)
+        for p in later:
+            if p['player_id'] in totals:
+                totals[p['player_id']] += p['predicted_points']
+    for p in predictions:
+        p['points_horizon'] = round(totals[p['player_id']], 2)
+    return gws
+
+
+def build_squads(feed: dict, budget: float = BUDGET) -> dict:
     """
     Best legal squads for the budget: one for the coming gameweek, one for the
-    next HORIZON gameweeks added together (better for planning, since transfers
-    are limited). Prices are today's.
+    horizon gameweeks added together (better for planning, since transfers are
+    limited). Prices are today's.
     """
     from squad import best_squad
 
     gw = feed['gameweek']
     by_id = {p['player_id']: p for p in feed['predictions']}
-    horizon_gws = [g for g in range(gw, gw + HORIZON) if g <= 38]
-    totals = {pid: p['predicted_points'] for pid, p in by_id.items()}
-    for g in horizon_gws[1:]:
-        later, _ = predict_gameweek(g, top_n=None)
-        for p in later:
-            if p['player_id'] in totals:
-                totals[p['player_id']] += p['predicted_points']
+    horizon_gws = feed['horizon_gameweeks']
+    totals = {pid: p['points_horizon'] for pid, p in by_id.items()}
 
     horizons = []
     for key, label, gws, points in (
@@ -200,10 +228,12 @@ def export_predictions_for_gameweek(gameweek: int = None):
     print(f"✓ Retrieved {len(predictions)} predictions from ML model for GW{gameweek}")
 
     elements = {el['id']: el for el in bootstrap['elements']}
+    horizon_gws = add_horizon_points(predictions, gameweek, predict_gameweek)
     feed = {
         'feed_version': FEED_VERSION,
         'season': info['season'],
         'gameweek': gameweek,
+        'horizon_gameweeks': horizon_gws,
         'deadline_time': events[gameweek]['deadline_time'],
         'generated_at': utc_now(),
         'data_source': 'FPL API',
@@ -211,6 +241,7 @@ def export_predictions_for_gameweek(gameweek: int = None):
         'predictions': enrich(predictions, elements),
         'injured_players': unavailable_players(bootstrap),
         'fixtures_by_team': fixtures_by_team(bootstrap, gameweek),
+        'players': player_index(bootstrap),
     }
 
     errors = validate_feed(feed)
@@ -222,7 +253,7 @@ def export_predictions_for_gameweek(gameweek: int = None):
     write_json(out_file, feed)
     if gameweek == info['next_gameweek']:
         write_json(os.path.join(OUTPUT_DIR, 'latest.json'), feed)
-        squads = build_squads(feed, predict_gameweek)
+        squads = build_squads(feed)
         write_json(os.path.join(OUTPUT_DIR, 'squad.json'), squads)
         for h in squads['horizons']:
             print(f"✓ £{squads['budget']}m squad for {h['label']}: {h['formation']}, "

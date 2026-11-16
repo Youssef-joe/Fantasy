@@ -45,6 +45,7 @@ async function load() {
   renderWire();
   renderPicks();
   renderXI();
+  initMyTeam();
   renderFixtures();
   initBoard();
   renderModel();
@@ -535,6 +536,174 @@ function drawXI() {
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
   });
   $$('#xiList li[data-id]').forEach((li) => {
+    const open = () => openPlayer(Number(li.dataset.id));
+    li.addEventListener('click', open);
+    li.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/* your team: import by FPL ID, best XI, transfer suggestions          */
+/* ------------------------------------------------------------------ */
+
+const TEAM_KEY = 'fantasy.teamId';
+const STATUS_TEXT = { i: 'Injured', s: 'Suspended', u: 'Unavailable', n: 'Not eligible', d: 'Doubtful' };
+
+// Describe any player id using the prediction (if they have one) or the player index.
+function describe(id) {
+  const pred = BY_ID.get(id);
+  const idx = FEED.players?.[String(id)];
+  if (pred) return { ...pred, gw: pred.predicted_points, horizon: pred.points_horizon ?? pred.predicted_points, predicted: true };
+  const [web_name, teamCode, position, price, status] = idx || ['Unknown', 'UNK', 'MID', 0, 'u'];
+  return {
+    player_id: id, web_name, team: teamCode, position, price, gw: 0, horizon: 0, predicted: false,
+    reason: STATUS_TEXT[status] || 'No fixture',
+  };
+}
+
+// Best legal XI from a squad for a points key ('gw' or 'horizon'), trying every formation.
+function bestXIFrom(squad, key) {
+  const byPos = { GKP: [], DEF: [], MID: [], FWD: [] };
+  squad.forEach((p) => byPos[p.position]?.push(p));
+  Object.values(byPos).forEach((l) => l.sort((a, b) => b[key] - a[key]));
+  let best = null;
+  for (let d = 3; d <= 5; d++) for (let m = 2; m <= 5; m++) {
+    const f = 10 - d - m;
+    if (f < 1 || f > 3 || byPos.DEF.length < d || byPos.MID.length < m || byPos.FWD.length < f || !byPos.GKP.length) continue;
+    const xi = [byPos.GKP[0], ...byPos.DEF.slice(0, d), ...byPos.MID.slice(0, m), ...byPos.FWD.slice(0, f)];
+    const sum = xi.reduce((s, p) => s + p[key], 0);
+    if (!best || sum > best.sum) best = { xi, sum, formation: `${d}-${m}-${f}` };
+  }
+  if (!best) return null;
+  const ranked = [...best.xi].sort((a, b) => b[key] - a[key]);
+  const inXI = new Set(best.xi.map((p) => p.player_id));
+  const bench = squad.filter((p) => !inXI.has(p.player_id))
+    .sort((a, b) => (a.position === 'GKP') - (b.position === 'GKP') || b[key] - a[key]);
+  return { ...best, bench, captain: ranked[0], vice: ranked[1], total: best.sum + (ranked[0]?.[key] || 0) };
+}
+
+// Every legal single transfer (same position, affordable at today's prices, max 3 per club),
+// ranked by the gain in best-XI points over the horizon.
+function suggestTransfers(squad, bank, limit = 3) {
+  const base = bestXIFrom(squad, 'horizon')?.total ?? 0;
+  const owned = new Set(squad.map((p) => p.player_id));
+  const clubs = {};
+  squad.forEach((p) => { clubs[p.team] = (clubs[p.team] || 0) + 1; });
+  const pool = FEED.predictions.filter((p) => !owned.has(p.player_id) && canPlay(p))
+    .map((p) => describe(p.player_id));
+  const best = new Map(); // best move per player out, so suggestions aren't all the same swap
+  for (const out of squad) {
+    const budget = (out.price || 0) + bank + 1e-9;
+    for (const cand of pool) {
+      if (cand.position !== out.position || cand.price > budget) continue;
+      if (cand.team !== out.team && (clubs[cand.team] || 0) >= 3) continue;
+      const next = squad.map((p) => (p.player_id === out.player_id ? cand : p));
+      const gain = (bestXIFrom(next, 'horizon')?.total ?? 0) - base;
+      if (gain > 0.05 && (!best.has(out.player_id) || gain > best.get(out.player_id).gain)) {
+        best.set(out.player_id, { out, inn: cand, gain });
+      }
+    }
+  }
+  return [...best.values()].sort((a, b) => b.gain - a.gain).slice(0, limit);
+}
+
+function initMyTeam() {
+  const form = $('#teamForm'), input = $('#teamId'), err = $('#teamError'), forget = $('#teamForget');
+  const store = {
+    get() { try { return localStorage.getItem(TEAM_KEY); } catch { return null; } },
+    set(v) { try { localStorage.setItem(TEAM_KEY, v); } catch { /* storage unavailable */ } },
+    clear() { try { localStorage.removeItem(TEAM_KEY); } catch { /* storage unavailable */ } },
+  };
+  const showError = (msg) => { err.textContent = msg; err.hidden = !msg; };
+
+  async function loadTeam(id) {
+    showError('');
+    const btn = $('#teamLoad');
+    btn.disabled = true; btn.textContent = 'Loading…';
+    try {
+      const res = await fetch(`/api/fpl-team?id=${encodeURIComponent(id)}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not load that team.');
+      store.set(id);
+      forget.hidden = false;
+      renderMyTeam(data);
+    } catch (e) {
+      showError(e.message);
+    } finally {
+      btn.disabled = false; btn.textContent = 'Load my team';
+    }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const id = input.value.replace(/\D/g, '');
+    if (!id) { showError('Enter your FPL team ID: the number in your team URL.'); input.focus(); return; }
+    loadTeam(id);
+  });
+  forget.addEventListener('click', () => {
+    store.clear(); input.value = ''; forget.hidden = true;
+    $('#myteamResult').hidden = true; $('#myteamResult').innerHTML = '';
+  });
+
+  const saved = store.get();
+  if (saved && /^\d{1,9}$/.test(saved)) { input.value = saved; loadTeam(saved); }
+}
+
+function renderMyTeam(team) {
+  const box = $('#myteamResult');
+  const squad = team.picks.map((p) => describe(p.player_id));
+  const xi = bestXIFrom(squad, 'gw');
+  const transfers = suggestTransfers(squad, team.bank);
+  const hz = FEED.horizon_gameweeks || [FEED.gameweek];
+  const hzLabel = hz.length > 1 ? `GW${hz[0]}–${hz.at(-1)}` : `GW${hz[0]}`;
+  const flag = (p) => (p.predicted
+    ? (p.chance_of_playing != null && p.chance_of_playing < 100 ? `<span class="warn amber">${p.chance_of_playing}%</span>` : '')
+    : `<span class="warn">${esc(p.reason)}</span>`);
+  const row = (p, cls = '') => `
+    <li class="${cls}" tabindex="0" data-id="${p.player_id}">
+      <span class="pos pos-${p.position}">${p.position}</span>
+      <span class="n">${teamChip(p.team)}<b>${esc(p.web_name)}</b>${p === xi?.captain ? '<span class="tag">C</span>' : p === xi?.vice ? '<span class="tag v">V</span>' : ''}</span>
+      ${flag(p) || '<span></span>'}
+      <span class="p">${f1(p.gw)}</span>
+    </li>`;
+
+  box.innerHTML = `
+    <div class="myteam-head">
+      <div>
+        <h3>${esc(team.name)}</h3>
+        <p>${esc(team.manager)}${team.overall_rank ? ` · overall rank ${team.overall_rank.toLocaleString()}` : ''} · squad as of the GW${team.gameweek} deadline</p>
+      </div>
+      <dl class="myteam-stats">
+        <div class="hl"><dt>Predicted GW${FEED.gameweek}</dt><dd>${xi ? f1(xi.total) : '–'}</dd></div>
+        <div><dt>Formation</dt><dd>${xi?.formation ?? '–'}</dd></div>
+        <div><dt>In the bank</dt><dd>${money(team.bank)}</dd></div>
+      </dl>
+    </div>
+    <div class="myteam-grid">
+      <div class="myteam-card">
+        <h4>Your best XI for GW${FEED.gameweek}</h4>
+        <p>Picked from your 15 for the most predicted points. Captain: <b>${esc(xi?.captain?.web_name ?? '–')}</b>.</p>
+        <ol class="squad-list">
+          ${(xi?.xi || []).map((p) => row(p)).join('')}
+          <li class="sub" aria-hidden="true">Bench</li>
+          ${(xi?.bench || []).map((p) => row(p, 'bench')).join('')}
+        </ol>
+      </div>
+      <div class="myteam-card">
+        <h4>Best transfers</h4>
+        <p>Single free transfers that add the most predicted points to your best XI over ${hzLabel}, within your £${team.bank.toFixed(1)}m bank and the 3-per-club limit.</p>
+        ${transfers.length ? transfers.map((t, i) => `
+          <div class="transfer" style="--d:${REDUCED ? 0 : i * 90}ms">
+            <div class="side out"><span>Out</span><b>${esc(t.out.web_name)}</b><small>${esc(t.out.team)} · ${money(t.out.price)}${t.out.predicted ? ` · ${f1(t.out.horizon)} pts` : ` · ${esc(t.out.reason)}`}</small></div>
+            <span class="arrow" aria-hidden="true">→</span>
+            <div class="side in"><span>In</span><b>${esc(t.inn.web_name)}</b><small>${esc(t.inn.team)} · ${money(t.inn.price)} · ${f1(t.inn.horizon)} pts</small></div>
+            <div class="gain"><span>Predicted gain over ${hzLabel}</span><strong>+${f1(t.gain)}</strong></div>
+          </div>`).join('') : '<p class="model-note">No single transfer improves your predicted points. Save the free transfer.</p>'}
+        <p class="myteam-note">Uses today's prices; your selling price in FPL can be lower after a price rise. Transfers made since the GW${team.gameweek} deadline aren't public yet, so they won't show here.</p>
+      </div>
+    </div>`;
+  box.hidden = false;
+  $$('.squad-list li[data-id]', box).forEach((li) => {
     const open = () => openPlayer(Number(li.dataset.id));
     li.addEventListener('click', open);
     li.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });

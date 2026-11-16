@@ -125,6 +125,15 @@ After exporting, each run scores any newly finished gameweek (`ml/accuracy.py`).
 
 `vercel.json` serves `frontend/` as a static site (no build step, clean URLs, so `/dashboard` works). Pushing updated feed files to `main` triggers a redeploy.
 
+There is one serverless function, [`api/fpl-team.js`](api/fpl-team.js) (`GET /api/fpl-team?id=<FPL team ID>`), behind the site's "Your team" section.
+
+- **Why it exists:** browsers can't call the FPL API directly because FPL doesn't allow cross-origin requests.
+- **What it does:** fetches a manager's public squad as of the last deadline (team name, bank, the 15 picks) server-side.
+- **Input:** only accepts a numeric ID and only ever calls `fantasy.premierleague.com`.
+- **Caching:** responses are cached for 5 minutes at the CDN.
+
+The page then picks the best XI from the squad and searches every legal single transfer (same position, affordable within the bank at today's prices, max 3 per club) for the biggest gain in predicted points over the next 3 gameweeks. Every player's 3-gameweek total is in the feed as `points_horizon`. The feed also carries a compact `players` index (name, club, position, price, status) so squads with ruled-out players can still be shown.
+
 ## Model
 
 **What it predicts:** FPL points for each player-fixture.
@@ -161,4 +170,5 @@ The best possible top-20 score is 10.5. The numbers from each run are written to
 - `scraper/`: FPL API client and past-season downloader
 - `ml/`: dataset and features, training, prediction, export, feed validation
 - `frontend/`: static site and prediction feed
+- `api/`: the Vercel function that imports an FPL team
 - `bin/cli.js`: `fantasy-cli`
