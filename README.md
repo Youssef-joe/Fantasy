@@ -92,6 +92,14 @@ Feed format (`feed_version: 2`):
 | `injured_players[]` | players FPL flags (injured, suspended, doubtful…) who have played this season, most-owned first |
 | `fixtures_by_team` | next 5 gameweeks of fixtures per team with FPL difficulty (1-5) |
 
+`accuracy.json` is written by `ml/accuracy.py` and feeds the site's track-record section:
+
+- **`live[]`:** one entry for every gameweek this season that FPL has finished and confirmed. It scores the predictions published for that gameweek (`gwNN.json`, frozen at the deadline) against real points:
+  - average error, against the last-5-average baseline
+  - average points of the top 20 predicted, the baseline's top 20 and the best possible top 20
+  - the captain pick, and the top 10 predicted with what they actually scored
+- **`backtest[]`:** the by-gameweek evaluation from the last training run, shown as "backtest" so it is never mistaken for live results.
+
 To preview locally: `python -m http.server 3000 --directory frontend` (or `fantasy-cli serve`).
 
 ## Automatic updates
@@ -101,7 +109,7 @@ To preview locally: `python -m http.server 3000 --directory frontend` (or `fanta
 - **Daily at 06:00 UTC** and on demand (Actions → *Update predictions* → *Run workflow*, optionally with a gameweek). If the feed changed, it commits it to `main`, which triggers a Vercel deploy.
 - **On pull requests** that touch `scraper/` or `ml/`, as a check. Nothing is committed; the generated feed is attached to the run as an artifact.
 
-Each run's summary shows the gameweek, the model's test results against the baseline, and the top 15 players. A failed run commits nothing, so the site keeps the last good feed, and GitHub emails the repo owner.
+After exporting, each run scores any newly finished gameweek (`ml/accuracy.py`). Each run's summary shows the gameweek, the model's test results against the baseline, and the top 15 players. A failed run commits nothing, so the site keeps the last good feed, and GitHub emails the repo owner.
 
 ## Deployment
 

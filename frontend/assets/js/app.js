@@ -48,6 +48,7 @@ async function load() {
   renderFixtures();
   initBoard();
   renderModel();
+  renderRecord();
   $('#footerUpdated').textContent = `Gameweek ${FEED.gameweek}, ${FEED.season} season. Predictions generated ${new Date(FEED.generated_at).toLocaleString()}.`;
 }
 
@@ -649,6 +650,82 @@ $('#playerDrawer').addEventListener('click', (e) => {
   // click on the backdrop (outside the panel) closes it
   if (e.target === e.currentTarget) e.currentTarget.close();
 });
+
+/* ------------------------------------------------------------------ */
+/* track record                                                        */
+/* ------------------------------------------------------------------ */
+
+async function renderRecord() {
+  let acc;
+  try {
+    const res = await fetch('data/predictions/accuracy.json', { cache: 'no-cache' });
+    if (!res.ok) return;
+    acc = await res.json();
+  } catch { return; }
+  const cols = [
+    ...(acc.backtest || []).map((r) => ({ ...r, kind: 'backtest' })),
+    ...(acc.live || []).map((r) => ({ ...r, kind: 'live' })),
+  ].slice(-12); // the most recent dozen; live results push the backtest out over the season
+  if (!cols.length) return;
+  $('#record').hidden = false;
+
+  const max = Math.max(...cols.map((c) => c.oracle_top20_avg_points || 0), 1);
+  const h = (v) => `${Math.max(1.5, (v / max) * 100)}%`;
+  $('#recordChart').innerHTML = cols.map((c, i) => {
+    const d = REDUCED ? 0 : i * 70;
+    const label = `GW${c.gameweek}${c.kind === 'backtest' ? ' (backtest)' : ''}: our top 20 averaged ${c.top20_avg_points.toFixed(1)} points, last-5 average top 20 ${c.baseline_top20_avg_points.toFixed(1)}, best possible ${c.oracle_top20_avg_points.toFixed(1)}`;
+    return `
+      <div class="rc-col ${c.kind}" role="img" aria-label="${esc(label)}" title="${esc(label)}">
+        <div class="rc-bars">
+          <span class="rc-oracle" style="--h:${h(c.oracle_top20_avg_points)}"></span>
+          <span class="rc-bar model" style="--h:${h(c.top20_avg_points)};--d:${d}ms"><b>${c.top20_avg_points.toFixed(1)}</b></span>
+          <span class="rc-bar base" style="--h:${h(c.baseline_top20_avg_points)};--d:${d + 60}ms"><b>${c.baseline_top20_avg_points.toFixed(1)}</b></span>
+        </div>
+        <div class="rc-label">GW${c.gameweek}<small>${c.kind === 'backtest' ? 'backtest' : 'live'}</small></div>
+      </div>`;
+  }).join('');
+  revealObserver.observe($('#recordChart'));
+  // on narrow screens the chart scrolls sideways: start at the latest gameweek
+  $('#recordChart').scrollLeft = $('#recordChart').scrollWidth;
+
+  const ls = acc.live_summary, bs = acc.backtest_summary;
+  const parts = [];
+  if (ls) {
+    parts.push(`Live, over ${ls.gameweeks} gameweek${ls.gameweeks > 1 ? 's' : ''}: our top 20 averaged <b>${ls.top20_avg_points.toFixed(1)} points</b> against ${ls.baseline_top20_avg_points.toFixed(1)} (best possible ${ls.oracle_top20_avg_points.toFixed(1)}).`);
+  }
+  if (bs) {
+    const first = acc.backtest[0].gameweek, last = acc.backtest[acc.backtest.length - 1].gameweek;
+    parts.push(`Striped bars are a backtest of GW${first}–${last}: each gameweek predicted by a model trained only on earlier matches. Top 20 averaged <b>${bs.top20_avg_points.toFixed(1)}</b> against ${bs.baseline_top20_avg_points.toFixed(1)}.`);
+  }
+  $('#recordFoot').innerHTML = parts.join(' ');
+
+  const latest = (acc.live || []).at(-1);
+  const box = $('#recordLatest');
+  if (!latest) {
+    box.innerHTML = `
+      <div class="record-pending">
+        <span class="big">GW${FEED.gameweek}</span>
+        <p>Live scoring starts once Gameweek ${FEED.gameweek} has been played and FPL confirms the points. The predictions on this page are frozen at the deadline and checked against the real results.</p>
+      </div>`;
+    return;
+  }
+  const c = latest.captain;
+  const verdict = (a) => (a >= 6 ? 'hit' : a <= 2 ? 'miss' : '');
+  box.innerHTML = `
+    <h3>Gameweek ${latest.gameweek}</h3>
+    <p>What our top picks predicted, and what they scored.</p>
+    <div class="captain-result">
+      <div class="who"><span>Captain pick</span><b>${esc(c.web_name)}</b>${teamChip(c.team)}</div>
+      <div class="score"><strong>${c.actual}</strong>pts scored<br>predicted ${f1(c.predicted)}</div>
+    </div>
+    <ol class="result-list">
+      <li class="head"><span>Top 10 predicted</span><span class="v">Pred</span><span class="v">Real</span></li>
+      ${latest.top_predicted.map((p) => `
+        <li><span class="n">${teamChip(p.team)}<b>${esc(p.web_name)}</b></span>
+          <span class="v">${f1(p.predicted)}</span>
+          <span class="v act ${verdict(p.actual)}">${p.actual}</span></li>`).join('')}
+    </ol>`;
+}
 
 /* ------------------------------------------------------------------ */
 /* model                                                               */

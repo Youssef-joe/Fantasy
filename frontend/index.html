@@ -34,6 +34,7 @@
       <a href="#xi">Best XI</a>
       <a href="#fixtures">Fixtures</a>
       <a href="#players">Players</a>
+      <a href="#record">Record</a>
       <a href="#model">Model</a>
     </nav>
     <div class="topbar-deadline" aria-live="off">
@@ -220,10 +221,31 @@
       </div>
     </section>
 
+    <!-- ===== Track record ===== -->
+    <section class="section" id="record" aria-labelledby="recordTitle" hidden>
+      <header class="section-head reveal">
+        <p class="kicker">05 · Track record</p>
+        <h2 class="section-title" id="recordTitle">Did the picks <em>deliver</em>?</h2>
+        <p class="section-sub" id="recordSub">Average points scored by the 20 players we rated highest each gameweek, against the 20 with the best last-5 average.</p>
+      </header>
+      <div class="record-grid">
+        <div class="record-chart-card reveal">
+          <div class="record-legend" aria-hidden="true">
+            <span><i class="lg-model"></i>Our top 20</span>
+            <span><i class="lg-base"></i>Last-5 average top 20</span>
+            <span><i class="lg-oracle"></i>Best possible</span>
+          </div>
+          <div class="record-chart" id="recordChart"></div>
+          <p class="record-foot" id="recordFoot"></p>
+        </div>
+        <div class="record-latest reveal" id="recordLatest"></div>
+      </div>
+    </section>
+
     <!-- ===== Model ===== -->
     <section class="section section-model" id="model" aria-labelledby="modelTitle">
       <header class="section-head reveal">
-        <p class="kicker">05 · Under the hood</p>
+        <p class="kicker">06 · Under the hood</p>
         <h2 class="section-title" id="modelTitle">How good is the <em>model</em>?</h2>
         <p class="section-sub">Measured on matches the model never saw during training, against a simple baseline: each player's average over their last five games.</p>
       </header>

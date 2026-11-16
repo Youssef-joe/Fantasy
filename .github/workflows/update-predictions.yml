@@ -68,6 +68,9 @@ jobs:
       - name: Validate feed
         run: python ml/validate_feed.py
 
+      - name: Score finished gameweeks
+        run: python ml/accuracy.py
+
       - name: Summary
         run: |
           python - <<'EOF' >> "$GITHUB_STEP_SUMMARY"
