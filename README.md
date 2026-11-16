@@ -1,188 +1,85 @@
 # Fantasy Football Prediction System
 
-A machine learning-powered system for predicting fantasy football player performance, featuring injury tracking and a modern web dashboard.
+Predicts Fantasy Premier League (FPL) points per player per gameweek with a Random Forest model, and publishes the results as a static website.
 
-## Installation
+## How it works
 
-### Python Dependencies
-Ensure Python 3.9+ is installed, then install requirements:
-```bash
-pip install -r scraper/requirements.txt
-pip install -r backend/requirements.txt
-pip install -r ml/requirements.txt
+```
+FPL API + Understat
+  ↓  scraper/            raw JSON in data/raw/
+  ↓  backend/etl.py      SQLite database (data/fantasy.db)
+  ↓  backend/features.py engineered features per player-match
+  ↓  ml/train.py         Random Forest → ml/model.joblib
+  ↓  ml/predict.py       ranked predictions for a gameweek
+  ↓  ml/export_predictions.py
+frontend/data/predictions/*.json   ← static feed read by the site
+  ↓
+frontend/ (static HTML) deployed on Vercel
 ```
 
-### CLI Tool (Optional)
-Install the CLI globally for easy command access with animated spinners, branded logo, and colored feedback:
+There is no backend server in production. The site reads the pre-generated JSON feed. `data/`, the database, and the trained model are local build artefacts and are not committed.
+
+## Setup
+
+Python 3.9+:
+
+```bash
+pip install -r scraper/requirements.txt -r backend/requirements.txt -r ml/requirements.txt
+```
+
+Optional CLI (Node.js):
+
 ```bash
 npm install -g .
 ```
 
-## Quick Start
+## Running the pipeline
 
-Using Python directly:
 ```bash
-# 1. Scrape fresh data from FPL API
-python scraper/main.py
-
-# 2. Load and process data
-python -m backend.etl
-python -m backend.features
-
-# 3. Train the ML model
-python ml/train.py
-
-# 4. View predictions
-python ml/predict.py --gameweek 37 --top 20 --show-injured
-
-# 5. Start API server
-python -m uvicorn backend.main:app --reload
-
-# 6. Open dashboard in browser
-frontend/dashboard.html
+python scraper/main.py                     # 1. scrape FPL + Understat
+python -m backend.etl                      # 2. load into SQLite
+python -m backend.features                 # 3. engineer features
+python ml/train.py                         # 4. train the model
+python ml/predict.py --gameweek 13 --top 20 --show-injured   # inspect predictions
+python ml/export_predictions.py 13         # 5. write frontend/data/predictions/gw13.json + latest.json
 ```
 
-Using the CLI (after npm install -g):
-The CLI features animated spinners, a branded logo, and colored feedback for an enhanced user experience.
+The same steps with the CLI:
 
 ```bash
-# 1. Scrape data
 fantasy-cli scrape
-
-# 2. Run ETL and features
 fantasy-cli etl
 fantasy-cli features
-
-# 3. Train model
 fantasy-cli train
-
-# 4. Get predictions
-fantasy-cli predict --gameweek 37 --top 20 --show-injured
-
-# 5. Start API
-fantasy-cli api
-
-# 6. Open dashboard
-fantasy-cli dashboard
+fantasy-cli predict --gameweek 13 --top 20 --show-injured
+fantasy-cli export --gameweek 13
+fantasy-cli serve                          # view the site at http://localhost:3000
 ```
 
-## Features
+`export` fails with an error if the model produces no predictions. It never writes placeholder data over the existing feed.
 
-### Machine Learning Predictions
-- Random Forest model trained on 8,063+ match records
-- Predicts player points 1-2 gameweeks in advance
-- Benchmark: MAE of 1.02 points (within 1 point accuracy on average)
+## Frontend
 
-### Injury Tracking
-- Automatically scrapes FPL injury data
-- Filters injured/unavailable players from predictions
-- Shows expected return gameweek
+- `frontend/index.html`: landing page and predictor
+- `frontend/dashboard.html`: predictions table and injured list
+- `frontend/data/predictions/`: `gwNN.json`, `latest.json`, `manifest.json`
 
-### Interactive Dashboard
-- Modern responsive web interface
-- Real-time prediction fetching
-- Player rankings and statistics
-- Injury alerts and status
+To preview locally: `python -m http.server 3000 --directory frontend` (or `fantasy-cli serve`).
 
-### REST API
-- FastAPI backend with full documentation
-- Endpoints for players, fixtures, teams, predictions
-- CORS enabled for frontend integration
+## Deployment
 
-## Project Structure
+`vercel.json` serves `frontend/` as a static site (no build step, clean URLs, so `/dashboard` works). Pushing updated feed files to `main` triggers a redeploy.
 
-- **scraper/** - FPL API data collection
-- **backend/** - FastAPI server, database, ETL
-- **ml/** - Feature engineering, model training, predictions
-- **frontend/** - Interactive HTML dashboard
-- **data/** - Raw JSON and processed data
+## Model
 
-## System Architecture
+- Random Forest regressor, 100 trees
+- Features: rolling points (last 5 / last 10), form, opponent difficulty, home/away, minutes consistency, goal threat, injury risk
+- `ml/train.py` prints MAE, RMSE, R² and feature importance on a held-out split
 
-```
-FPL API
-  ↓
-Scraper (Python) → data/raw/*.json
-  ↓
-ETL Pipeline → SQLite Database
-  ↓
-Feature Engineering (8 features per player-match)
-  ↓
-Model Training (Random Forest, 100 estimators)
-  ↓
-Predictions API ← Frontend Dashboard
-```
+## Project structure
 
-## Model Benchmarks
-
-### Performance Metrics
-- **Training Samples**: 8,063
-- **Mean Absolute Error (MAE)**: 1.02 points
-- **Root Mean Squared Error (RMSE)**: 1.93 points
-- **R-squared (R²)**: 0.32
-
-### Feature Importance
-- Form (43%) - Recent performance
-- Goal Threat (16%) - Attacking contribution rate
-- Minutes Consistency (12%) - Playing time stability
-- Historical Averages (12%) - Past performance
-- Injury Risk (8%) - Minute drop-off detection
-- Home/Away (3%) - Location advantage
-- Opponent Difficulty (6%) - Defense strength
-
-## Documentation
-
-- **QUICKSTART.md** - Setup and basic usage
-- **PIPELINE.md** - Detailed pipeline explanation
-- **FRONTEND_GUIDE.md** - Dashboard usage guide
-- **STATUS.md** - Implementation status and features
-
-## Usage Examples
-
-### Get top 20 predictions
-```bash
-python ml/predict.py --gameweek 37 --top 20
-# or
-fantasy-cli predict --gameweek 37 --top 20
-```
-
-### Show injured players
-```bash
-python ml/predict.py --gameweek 37 --show-injured
-# or
-fantasy-cli predict --gameweek 37 --show-injured
-```
-
-### Retrain model
-```bash
-python -m backend.etl
-python -m backend.features
-python ml/train.py --model random_forest
-# or
-fantasy-cli etl && fantasy-cli features && fantasy-cli train
-```
-
-### Start API
-```bash
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
-# or
-fantasy-cli api
-```
-
-## Requirements
-
-- Python 3.9+
-- pip packages: scikit-learn, pandas, numpy, fastapi, sqlalchemy
-- Optional: Node.js for Next.js frontend (current: HTML only)
-
-## Future Improvements
-
-Priority enhancements:
-1. Injury tracking integration (completed)
-2. Interactive dashboard (completed)
-3. Opponent difficulty dynamic calculation
-4. Authentication and rate limiting
-5. Real-time injury updates
-6. Ensemble models (XGBoost, LightGBM)
-7. Player watchlist and alerts
-8. Historical performance tracking
+- `scraper/`: FPL and Understat clients
+- `backend/`: SQLAlchemy models, ETL, feature engineering
+- `ml/`: training, prediction, export
+- `frontend/`: static site and prediction feed
+- `bin/cli.js`: `fantasy-cli`

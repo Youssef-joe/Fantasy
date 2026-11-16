@@ -115,9 +115,6 @@
                     <a href="index.html" class="text-xs font-semibold text-zinc-300 hover:text-brand-gold transition flex items-center gap-1">
                         <span>← Back to Visual Explainer</span>
                     </a>
-                    <a href="http://localhost:8000/docs" target="_blank" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-brand-gold hover:text-black text-white text-xs font-bold transition">
-                        API Docs
-                    </a>
                 </div>
             </div>
         </header>
@@ -248,8 +245,6 @@
     </div>
 
     <script>
-        const API_BASE = window.API_BASE_URL || (['localhost', '127.0.0.1'].includes(window.location.hostname) ? 'http://localhost:8000' : '');
-
         const FALLBACK_PREDICTIONS = [
             { player_id: 1, player_name: "Erling Haaland", team: "MCI", position: "FWD", opponent: "WOL", is_home: "HOME", predicted_points: 10.84, avg_last_5: 9.40 },
             { player_id: 2, player_name: "Phil Foden", team: "MCI", position: "MID", opponent: "WOL", is_home: "HOME", predicted_points: 9.85, avg_last_5: 9.20 },
@@ -275,25 +270,7 @@
             spinner.classList.remove('hidden');
             table.classList.add('hidden');
 
-            // 1. Try local server if on localhost
-            if (['localhost', '127.0.0.1'].includes(window.location.hostname)) {
-                try {
-                    const response = await fetch(`http://localhost:8000/predict/?gameweek=${gameweek}&top_n=${topPlayers}`, { signal: AbortSignal.timeout(1500) });
-                    if (response.ok) {
-                        const data = await response.json();
-                        statusInd.textContent = "Live Local ML API Connected";
-                        statusInd.className = "text-xs font-mono font-bold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-                        renderPredictions(data, gameweek);
-                        spinner.classList.add('hidden');
-                        table.classList.remove('hidden');
-                        return;
-                    }
-                } catch (e) {
-                    console.log("Local API not running, trying static feed...");
-                }
-            }
-
-            // 2. Try static pre-generated Vercel CDN feed (Option B)
+            // 1. Static prediction feed
             try {
                 let staticUrl = `data/predictions/gw${gameweek}.json`;
                 let res = await fetch(staticUrl);
@@ -313,7 +290,7 @@
                 console.warn("Static feed note:", err.message);
             }
 
-            // 3. Fallback
+            // 2. Fallback
             statusInd.textContent = "Offline (Seeded High-Fidelity Dataset)";
             statusInd.className = "text-xs font-mono font-bold px-3 py-1 rounded-full bg-brand-gold/20 text-brand-gold border border-brand-gold/30";
             renderPredictions({ predictions: FALLBACK_PREDICTIONS.slice(0, parseInt(topPlayers)), injured_players: [] }, gameweek);

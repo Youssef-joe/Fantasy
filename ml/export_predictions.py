@@ -15,32 +15,29 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 sys.path.insert(0, PROJECT_ROOT)
 
-def export_predictions_for_gameweek(gameweek: int = 38, top_n: int = 100):
+def export_predictions_for_gameweek(gameweek: int, top_n: int = 100):
     """
-    Attempt to run the ML prediction pipeline and export to static JSON.
-    If database is not available, uses fallback data.
+    Run the ML prediction pipeline and export the result to static JSON.
+    Fails loudly instead of writing placeholder data, so a broken pipeline
+    never overwrites the last good feed.
     """
-    predictions = []
-    injured_players = []
+    from backend.database import SessionLocal
+    from ml.predict import predict_gameweek
 
+    db = SessionLocal()
     try:
-        from backend.database import SessionLocal
-        from ml.predict import predict_gameweek
+        predictions, injured_players = predict_gameweek(
+            db, gameweek=gameweek, top_n=top_n, include_injured=False
+        )
+    finally:
+        db.close()
 
-        db = SessionLocal()
-        try:
-            preds, inj = predict_gameweek(db, gameweek=gameweek, top_n=top_n, include_injured=False)
-            predictions = preds
-            injured_players = inj
-            print(f"✓ Retrieved {len(predictions)} live predictions from ML model for GW{gameweek}")
-        finally:
-            db.close()
-    except Exception as e:
-        print(f"ℹ Database/model not ready ({e}). Generating static feed via build-static-data.js")
-        # Run node fallback generator
-        import subprocess
-        subprocess.run(["node", os.path.join(PROJECT_ROOT, "bin", "build-static-data.js")], check=True)
-        return
+    if not predictions:
+        raise RuntimeError(
+            f"No predictions produced for GW{gameweek}; refusing to overwrite the feed. "
+            "Check that the database is populated and the model is trained."
+        )
+    print(f"✓ Retrieved {len(predictions)} predictions from ML model for GW{gameweek}")
 
     data = {
         "gameweek": gameweek,
@@ -63,6 +60,6 @@ def export_predictions_for_gameweek(gameweek: int = 38, top_n: int = 100):
     print(f"✓ Exported predictions to {out_file} and {latest_file}")
 
 if __name__ == "__main__":
-    gw = int(sys.argv[1]) if len(sys.argv) > 1 else 38
-    export_predictions_for_gameweek(gw)
-
+    if len(sys.argv) < 2:
+        sys.exit("usage: python ml/export_predictions.py <gameweek>")
+    export_predictions_for_gameweek(int(sys.argv[1]))
