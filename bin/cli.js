@@ -39,32 +39,18 @@ program.command('scrape')
     });
   });
 
-program.command('etl')
-  .description('Load and process data into database')
-  .action(() => {
-    const spinner = ora(chalk.magenta('Running ETL pipeline...')).start();
-    exec('python -m backend.etl', (error, stdout, stderr) => {
+program.command('history')
+  .description('Download past seasons used for training (cached once downloaded)')
+  .option('-s, --seasons <number>', 'How many past seasons', 3)
+  .action((options) => {
+    const spinner = ora(chalk.magenta('Downloading past seasons...')).start();
+    exec(`python scraper/history.py ${parseInt(options.seasons, 10)}`, (error, stdout, stderr) => {
       if (error) {
-        spinner.fail(chalk.red(`ETL failed: ${error.message}`));
+        spinner.fail(chalk.red(`Download failed: ${error.message}`));
+        process.exitCode = 1;
         return;
       }
-      spinner.succeed(chalk.green('ETL completed successfully'));
-      console.log(stdout);
-      if (stderr) console.error(stderr);
-    });
-  });
-
-program.command('features')
-  .description('Calculate features')
-  .action(() => {
-    const spinner = ora(chalk.yellow('Calculating features...')).start();
-    exec('python -m backend.features', (error, stdout, stderr) => {
-      if (error) {
-        spinner.fail(chalk.red(`Feature calculation failed: ${error.message}`));
-        return;
-      }
-      spinner.succeed(chalk.green('Features calculated successfully'));
-      console.log(stdout);
+      spinner.succeed(chalk.green('Past seasons ready'));
       if (stderr) console.error(stderr);
     });
   });

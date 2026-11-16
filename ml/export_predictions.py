@@ -134,8 +134,7 @@ def build_manifest(season: str, latest_gameweek: int, deadline_time: str) -> dic
 
 
 def export_predictions_for_gameweek(gameweek: int = None):
-    from backend.database import SessionLocal
-    from ml.predict import predict_gameweek
+    from predict import predict_gameweek
 
     bootstrap = load_bootstrap()
     info = load_season_info()
@@ -148,11 +147,7 @@ def export_predictions_for_gameweek(gameweek: int = None):
     if gameweek not in events:
         raise ValueError(f"GW{gameweek} is not a gameweek of the {info['season']} season")
 
-    db = SessionLocal()
-    try:
-        predictions, _ = predict_gameweek(db, gameweek=gameweek, top_n=None, include_injured=False)
-    finally:
-        db.close()
+    predictions, _ = predict_gameweek(gameweek, top_n=None)
 
     if not predictions:
         raise RuntimeError(
