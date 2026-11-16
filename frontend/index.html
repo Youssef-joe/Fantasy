@@ -233,9 +233,9 @@
           <p class="model-note" id="modelNote"></p>
         </div>
         <ol class="pipeline reveal">
-          <li><span class="pipe-n">1</span><div><h3>Scrape</h3><p>Every morning: fixtures, player histories, prices and injury news from the official FPL API.</p></div></li>
-          <li><span class="pipe-n">2</span><div><h3>Engineer</h3><p>Rolling form, minutes consistency, goal threat, home or away, and recent drop-off in minutes.</p></div></li>
-          <li><span class="pipe-n">3</span><div><h3>Train</h3><p>A 100-tree random forest is retrained on this season's matches.</p></div></li>
+          <li><span class="pipe-n">1</span><div><h3>Scrape</h3><p>Every morning: fixtures, player histories, prices and injury news from the official FPL API, plus three past seasons for training.</p></div></li>
+          <li><span class="pipe-n">2</span><div><h3>Engineer</h3><p>Form, minutes and start rate, expected goals and assists, fixture difficulty, price, and how strong both teams have been lately. Only past matches count.</p></div></li>
+          <li><span class="pipe-n">3</span><div><h3>Train</h3><p>A gradient-boosted model is retrained on about 90,000 player-matches, then scaled by each player's chance of playing.</p></div></li>
           <li><span class="pipe-n">4</span><div><h3>Publish</h3><p>Predictions are checked and published here automatically.</p></div></li>
         </ol>
       </div>
