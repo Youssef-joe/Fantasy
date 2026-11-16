@@ -16,7 +16,6 @@ on:
   pull_request:
     paths:
       - "scraper/**"
-      - "backend/**"
       - "ml/**"
       - ".github/workflows/update-predictions.yml"
 
@@ -40,17 +39,23 @@ jobs:
           cache: pip
           cache-dependency-path: |
             scraper/requirements.txt
-            backend/requirements.txt
             ml/requirements.txt
 
       - name: Install dependencies
-        run: pip install -r scraper/requirements.txt -r backend/requirements.txt -r ml/requirements.txt
+        run: pip install -r scraper/requirements.txt -r ml/requirements.txt
 
       - name: Scrape FPL API
         run: python scraper/main.py
 
-      - name: Load into SQLite
-        run: python -m backend.etl
+      # Finished seasons never change, so they are cached between runs.
+      - name: Restore past seasons
+        uses: actions/cache@v5
+        with:
+          path: data/raw/history
+          key: fpl-history-${{ hashFiles('scraper/history.py') }}
+
+      - name: Download past seasons
+        run: python scraper/history.py
 
       - name: Train model
         run: python ml/train.py
@@ -70,7 +75,10 @@ jobs:
           d = json.load(open("frontend/data/predictions/latest.json"))
           m = d.get("model") or {}
           print(f"## GW{d['gameweek']} ({d['season']}): {len(d['predictions'])} players, {len(d['injured_players'])} flagged")
-          print(f"Deadline {d['deadline_time']}. Test MAE {m.get('test_mae')} vs baseline {m.get('baseline_mae_avg_last_5')} ({m.get('split')} split, {m.get('n_train')} train rows)\n")
+          print(f"Deadline {d['deadline_time']}. Tested {m.get('split')} on GW{m.get('test_gameweeks')}: "
+                f"MAE {m.get('test_mae')} vs baseline {m.get('baseline_mae_avg_last_5')}; "
+                f"top-20 picks averaged {m.get('top20_avg_points')} pts vs {m.get('baseline_top20_avg_points')} "
+                f"(best possible {m.get('oracle_top20_avg_points')}). {m.get('n_train')} training rows.\n")
           print("| # | Player | Team | Pos | Opp | Pts |\n|---|---|---|---|---|---|")
           for i, p in enumerate(d["predictions"][:15], 1):
               print(f"| {i} | {p['web_name']} | {p['team']} | {p['position']} | {p['opponent']} | {p['predicted_points']} |")

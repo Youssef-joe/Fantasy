@@ -1,179 +1,138 @@
 """
-Model training pipeline.
-Trains a Random Forest model on engineered features to predict player points.
+Train the points model and measure it honestly.
+
+    python ml/train.py
+
+1. Builds player-match rows from this season (data/raw) plus any past seasons in
+   data/raw/history (see scraper/history.py), with features from dataset.py.
+2. Evaluates by gameweek: for each of the last few finished gameweeks of this
+   season, trains only on matches played before it and predicts it. Reports average
+   error, rank correlation and the average points of the top-20 predicted players,
+   next to the same numbers for a simple baseline (average of the last 5 matches).
+3. Fits the final model on every match with a known outcome and saves it to
+   ml/model.joblib, with the metrics in ml/metrics.json.
 """
+import json
 import os
 import sys
-import json
-import joblib
 from datetime import datetime, timezone
+
+import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.preprocessing import StandardScaler
+from scipy.stats import spearmanr
+from sklearn.ensemble import HistGradientBoostingRegressor
 
-# Add backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import dataset as ds  # noqa: E402
 
-from backend.database import SessionLocal
-from feature_engineering import generate_training_dataset
-
-
-def train_model(model_type: str = 'random_forest', test_size: float = 0.2):
-    """
-    Train the prediction model.
-    
-    Args:
-        model_type: 'random_forest' or 'gradient_boosting'
-        test_size: Fraction of data to use for testing
-    """
-    db = SessionLocal()
-    
-    try:
-        print("=" * 60)
-        print("FANTASY FOOTBALL PREDICTION MODEL TRAINING")
-        print("=" * 60)
-        
-        print("\n[1/5] Generating training dataset...")
-        df = generate_training_dataset(db)
-        
-        if df.empty:
-            print("ERROR: No training data available. Please run ETL and feature engineering first.")
-            return False
-        
-        print(f"✓ Dataset generated: {len(df)} records, {len(df.columns)} features")
-        print(f"  Features: {', '.join(df.columns[:-1])}")
-        
-        print("\n[2/5] Preparing features and target...")
-        X = df.drop('total_points', axis=1)
-        y = df['total_points']
-        
-        print(f"✓ Input shape: {X.shape}")
-        print(f"  Target distribution: min={y.min():.1f}, max={y.max():.1f}, mean={y.mean():.1f}")
-        
-        print("\n[3/5] Splitting train/test data...")
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=test_size, random_state=42
-        )
-        print(f"✓ Train: {len(X_train)} | Test: {len(X_test)}")
-        
-        print("\n[4/5] Training model...")
-        if model_type == 'gradient_boosting':
-            model = GradientBoostingRegressor(
-                n_estimators=200,
-                learning_rate=0.1,
-                max_depth=5,
-                random_state=42,
-                verbose=1
-            )
-        else:  # random_forest
-            model = RandomForestRegressor(
-                n_estimators=100,
-                max_depth=10,
-                min_samples_split=5,
-                min_samples_leaf=2,
-                random_state=42,
-                n_jobs=-1
-            )
-        
-        model.fit(X_train, y_train)
-        print(f"✓ Model trained: {model_type}")
-        
-        print("\n[5/5] Evaluating performance...")
-        y_pred_train = model.predict(X_train)
-        y_pred_test = model.predict(X_test)
-        
-        train_mae = mean_absolute_error(y_train, y_pred_train)
-        test_mae = mean_absolute_error(y_test, y_pred_test)
-        train_rmse = np.sqrt(mean_squared_error(y_train, y_pred_train))
-        test_rmse = np.sqrt(mean_squared_error(y_test, y_pred_test))
-        train_r2 = r2_score(y_train, y_pred_train)
-        test_r2 = r2_score(y_test, y_pred_test)
-        
-        print("\n" + "=" * 60)
-        print("MODEL PERFORMANCE METRICS")
-        print("=" * 60)
-        print(f"Train MAE:  {train_mae:.4f}")
-        print(f"Test MAE:   {test_mae:.4f}")
-        print(f"Train RMSE: {train_rmse:.4f}")
-        print(f"Test RMSE:  {test_rmse:.4f}")
-        print(f"Train R²:   {train_r2:.4f}")
-        print(f"Test R²:    {test_r2:.4f}")
-        
-        # Feature importance
-        if hasattr(model, 'feature_importances_'):
-            print("\n" + "=" * 60)
-            print("FEATURE IMPORTANCE")
-            print("=" * 60)
-            feature_importance = pd.DataFrame({
-                'feature': X.columns,
-                'importance': model.feature_importances_
-            }).sort_values('importance', ascending=False)
-            
-            for idx, row in feature_importance.iterrows():
-                print(f"{row['feature']:<25} {row['importance']:.4f}")
-        
-        # Save model
-        model_dir = os.path.dirname(__file__)
-        model_path = os.path.join(model_dir, 'model.joblib')
-        joblib.dump(model, model_path)
-        print(f"\n✓ Model saved to: {model_path}")
-        
-        # Save feature names
-        features_path = os.path.join(model_dir, 'features.txt')
-        with open(features_path, 'w') as f:
-            f.write('\n'.join(X.columns))
-        print(f"✓ Feature names saved to: {features_path}")
-
-        # Save measured metrics; the exported feed reports these instead of hardcoded numbers.
-        # Baseline: predict each player's average points over their previous 5 matches.
-        baseline_mae = mean_absolute_error(y_test, X_test['avg_points_last_5'])
-        metrics = {
-            'model_type': type(model).__name__,
-            'n_estimators': getattr(model, 'n_estimators', None),
-            'split': 'random',
-            'n_train': int(len(X_train)),
-            'n_test': int(len(X_test)),
-            'test_mae': round(float(test_mae), 3),
-            'test_rmse': round(float(test_rmse), 3),
-            'test_r2': round(float(test_r2), 3),
-            'baseline_mae_avg_last_5': round(float(baseline_mae), 3),
-            'trained_at': datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
-        }
-        metrics_path = os.path.join(model_dir, 'metrics.json')
-        with open(metrics_path, 'w') as f:
-            json.dump(metrics, f, indent=2)
-        print(f"✓ Metrics saved to: {metrics_path} (baseline MAE {baseline_mae:.4f})")
-        
-        print("\n" + "=" * 60)
-        print("TRAINING COMPLETED SUCCESSFULLY")
-        print("=" * 60)
-        
-        return True
-    
-    except Exception as e:
-        print(f"\n✗ ERROR: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
-    
-    finally:
-        db.close()
+MODEL_DIR = os.path.dirname(os.path.abspath(__file__))
+EVAL_GAMEWEEKS = 5   # how many recent finished gameweeks to test on
+MIN_TRAIN_GAMEWEEKS = 3
+TOP_N = 20
 
 
-if __name__ == "__main__":
-    import argparse
-    
-    parser = argparse.ArgumentParser(description='Train fantasy football prediction model')
-    parser.add_argument('--model', type=str, default='random_forest',
-                        choices=['random_forest', 'gradient_boosting'],
-                        help='Model type to train')
-    parser.add_argument('--test-size', type=float, default=0.2,
-                        help='Fraction of data to use for testing')
-    
-    args = parser.parse_args()
-    
-    success = train_model(model_type=args.model, test_size=args.test_size)
-    sys.exit(0 if success else 1)
+def make_model():
+    # Poisson loss suits non-negative, count-like points (negative points are clipped to 0 for training).
+    return HistGradientBoostingRegressor(
+        loss='poisson', max_iter=400, learning_rate=0.05, max_leaf_nodes=31,
+        min_samples_leaf=40, l2_regularization=1.0, random_state=42,
+    )
+
+
+def load_all():
+    cur = ds.load_current_season()
+    seasons = ds.available_past_seasons()
+    frames = [cur] + [ds.load_past_season(s) for s in seasons]
+    df = ds.add_features(pd.concat(frames, ignore_index=True))
+    return df, cur['season'].iloc[0], seasons
+
+
+def evaluation_rounds(df, season):
+    """Recent finished gameweeks of this season, leaving a few earlier ones for training."""
+    rounds = sorted(df.loc[df['season'] == season, 'round'].dropna().unique().astype(int))
+    usable = [int(r) for r in rounds if r > MIN_TRAIN_GAMEWEEKS]
+    return usable[-EVAL_GAMEWEEKS:]
+
+
+def evaluate(df, season, rounds):
+    per_round = []
+    for r in rounds:
+        is_cur = df['season'] == season
+        train = df[~(is_cur & (df['round'] >= r))]
+        test = df[is_cur & (df['round'] == r)]
+        model = make_model().fit(train[ds.FEATURES], train['total_points'].clip(lower=0))
+        pred = model.predict(test[ds.FEATURES])
+        base = ds.baseline(test).to_numpy()
+        actual = test['total_points'].to_numpy()
+        per_round.append({
+            'gameweek': int(r), 'n': len(test),
+            'mae': float(np.abs(pred - actual).mean()),
+            'base_mae': float(np.abs(base - actual).mean()),
+            'spearman': float(spearmanr(actual, pred).correlation),
+            'base_spearman': float(spearmanr(actual, base).correlation),
+            'top': float(actual[np.argsort(-pred)[:TOP_N]].mean()),
+            'base_top': float(actual[np.argsort(-base)[:TOP_N]].mean()),
+            'oracle_top': float(np.sort(actual)[-TOP_N:].mean()),
+        })
+        print(f"  GW{r}: MAE {per_round[-1]['mae']:.3f} (baseline {per_round[-1]['base_mae']:.3f}), "
+              f"top-{TOP_N} avg {per_round[-1]['top']:.2f} pts (baseline {per_round[-1]['base_top']:.2f})")
+    return per_round
+
+
+def weighted(per_round, key):
+    n = np.array([r['n'] for r in per_round])
+    return float(np.average([r[key] for r in per_round], weights=n))
+
+
+def main():
+    print("=" * 60)
+    print("FANTASY FOOTBALL MODEL TRAINING")
+    print("=" * 60)
+
+    df, season, past = load_all()
+    known = df.dropna(subset=['total_points'])
+    print(f"Rows: {len(known):,} ({season} + past seasons: {', '.join(past) or 'none'})")
+
+    rounds = evaluation_rounds(known, season)
+    metrics = {'split': 'by gameweek', 'test_gameweeks': rounds, 'seasons_used': [season, *past]}
+    if rounds:
+        print(f"\nEvaluating on GW{rounds[0]}-{rounds[-1]} of {season}, training only on earlier matches each time:")
+        per_round = evaluate(known, season, rounds)
+        metrics.update({
+            'n_test': int(sum(r['n'] for r in per_round)),
+            'test_mae': round(weighted(per_round, 'mae'), 3),
+            'baseline_mae_avg_last_5': round(weighted(per_round, 'base_mae'), 3),
+            'test_spearman': round(float(np.mean([r['spearman'] for r in per_round])), 3),
+            'baseline_spearman': round(float(np.mean([r['base_spearman'] for r in per_round])), 3),
+            'top20_avg_points': round(float(np.mean([r['top'] for r in per_round])), 2),
+            'baseline_top20_avg_points': round(float(np.mean([r['base_top'] for r in per_round])), 2),
+            'oracle_top20_avg_points': round(float(np.mean([r['oracle_top'] for r in per_round])), 2),
+            'per_gameweek': [{k: (round(v, 3) if isinstance(v, float) else v) for k, v in r.items()} for r in per_round],
+        })
+        print(f"\nOverall: MAE {metrics['test_mae']} vs baseline {metrics['baseline_mae_avg_last_5']}; "
+              f"top-{TOP_N} {metrics['top20_avg_points']} vs {metrics['baseline_top20_avg_points']} pts "
+              f"(best possible {metrics['oracle_top20_avg_points']})")
+    else:
+        print("\nNot enough finished gameweeks this season to evaluate yet; skipping evaluation.")
+
+    print("\nFitting final model on all matches...")
+    model = make_model().fit(known[ds.FEATURES], known['total_points'].clip(lower=0))
+    joblib.dump({'model': model, 'features': ds.FEATURES}, os.path.join(MODEL_DIR, 'model.joblib'))
+
+    metrics.update({
+        'model_type': 'HistGradientBoostingRegressor',
+        'loss': 'poisson',
+        'n_features': len(ds.FEATURES),
+        'n_train': int(len(known)),
+        'trained_at': datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
+    })
+    path = os.path.join(MODEL_DIR, 'metrics.json')
+    with open(path + '.tmp', 'w') as f:
+        json.dump(metrics, f, indent=2)
+    os.replace(path + '.tmp', path)
+    print(f"✓ Saved ml/model.joblib and ml/metrics.json ({len(known):,} training rows, {len(ds.FEATURES)} features)")
+
+
+if __name__ == '__main__':
+    main()
