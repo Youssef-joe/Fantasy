@@ -3,7 +3,7 @@
   "season": "2026-27",
   "gameweek": 11,
   "deadline_time": "2026-11-21T11:00:00Z",
-  "generated_at": "2026-11-16T03:32:33Z",
+  "generated_at": "2026-11-16T03:52:01Z",
   "data_source": "FPL API",
   "model": {
     "model_type": "RandomForestRegressor",
@@ -15,7 +15,7 @@
     "test_rmse": 2.078,
     "test_r2": 0.278,
     "baseline_mae_avg_last_5": 1.2,
-    "trained_at": "2026-11-16T03:31:07Z"
+    "trained_at": "2026-11-16T03:51:46Z"
   },
   "predictions": [
     {
@@ -1923,7 +1923,7 @@
       "status": "Doubtful",
       "web_name": "Gvardiol",
       "price": 5.6,
-      "selected_by_percent": 22.5,
+      "selected_by_percent": 22.4,
       "chance_of_playing": 75,
       "news": "Unspecified injury - 75% chance of playing"
     },
