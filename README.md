@@ -65,8 +65,21 @@ fantasy-cli serve                          # view the site at http://localhost:3
 
 ## Frontend
 
-- `frontend/index.html`: landing page and predictor
-- `frontend/dashboard.html`: predictions table and injured list
+A single page, plain HTML/CSS/JS with no build step and no third-party scripts (only Google Fonts), so it runs under a strict Content-Security-Policy. Every number on it comes from `latest.json`.
+
+- `frontend/index.html`: the page. Sections:
+  - hero: gameweek, deadline countdown, rotating top-5 spotlight
+  - availability wire: scrolling injury news
+  - captain / differential / value picks
+  - best XI on a 3D pitch, with a formation switcher
+  - fixture difficulty heatmap
+  - searchable player board with a detail drawer
+  - model accuracy against the baseline
+- `frontend/assets/js/app.js`: loads the feed and renders every section
+- `frontend/assets/js/pitch.js`: the animated floodlit pitch behind the hero (canvas; pauses off-screen)
+- `frontend/assets/js/teams.js`: club names and kit colours by FPL short name
+- `frontend/assets/css/site.css`: all styles; honours `prefers-reduced-motion`
+- `frontend/dashboard.html`: redirects to `/#players` (old URL)
 - `frontend/data/predictions/`: `gwNN.json`, `latest.json`, `manifest.json`
 
 Feed format (`feed_version: 2`):
