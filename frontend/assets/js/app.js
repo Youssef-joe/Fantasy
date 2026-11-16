@@ -672,5 +672,13 @@ function renderModel() {
       : `Right now the model is <b>not beating</b> the baseline. We're working on it. `;
   }
   const trained = m.trained_at ? new Date(m.trained_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short' }) : '';
-  $('#modelNote').innerHTML = `Lower is better. ${verdict}Measured on ${m.n_test?.toLocaleString() ?? '–'} held-out matches after training on ${m.n_train?.toLocaleString() ?? '–'} from this season${trained ? `, retrained ${esc(trained)}` : ''}.`;
+  const gws = Array.isArray(m.test_gameweeks) && m.test_gameweeks.length
+    ? `GW${m.test_gameweeks[0]}–${m.test_gameweeks[m.test_gameweeks.length - 1]}` : null;
+  const how = m.split === 'by gameweek' && gws
+    ? `Tested on ${gws} (${m.n_test?.toLocaleString() ?? '–'} player-matches), each time training only on matches played before that gameweek`
+    : `Measured on ${m.n_test?.toLocaleString() ?? '–'} held-out matches`;
+  const picks = m.top20_avg_points != null && m.baseline_top20_avg_points != null
+    ? ` Its top 20 picks each week averaged <b>${m.top20_avg_points.toFixed(1)} points</b>, against ${m.baseline_top20_avg_points.toFixed(1)} for the baseline's.` : '';
+  const seasons = Array.isArray(m.seasons_used) && m.seasons_used.length > 1 ? ` Trained on ${m.seasons_used.length} seasons of matches` : '';
+  $('#modelNote').innerHTML = `Lower is better. ${verdict}${how}.${picks}${seasons}${seasons && trained ? `, retrained ${esc(trained)}.` : trained ? ` Retrained ${esc(trained)}.` : seasons ? '.' : ''}`;
 }
