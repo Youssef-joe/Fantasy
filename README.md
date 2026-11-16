@@ -81,6 +81,15 @@ Feed format (`feed_version: 2`):
 
 To preview locally: `python -m http.server 3000 --directory frontend` (or `fantasy-cli serve`).
 
+## Automatic updates
+
+[`.github/workflows/update-predictions.yml`](.github/workflows/update-predictions.yml) runs the whole pipeline (scrape → ETL → train → export → validate):
+
+- **Daily at 06:00 UTC** and on demand (Actions → *Update predictions* → *Run workflow*, optionally with a gameweek). If the feed changed, it commits it to `main`, which triggers a Vercel deploy.
+- **On pull requests** that touch `scraper/`, `backend/` or `ml/`, as a check. Nothing is committed; the generated feed is attached to the run as an artifact.
+
+Each run's summary shows the gameweek, the model's test MAE against the baseline, and the top 15 players. A failed run commits nothing, so the site keeps the last good feed, and GitHub emails the repo owner.
+
 ## Deployment
 
 `vercel.json` serves `frontend/` as a static site (no build step, clean URLs, so `/dashboard` works). Pushing updated feed files to `main` triggers a redeploy.
