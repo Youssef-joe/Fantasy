@@ -119,8 +119,8 @@
     <section class="section section-xi" id="xi" aria-labelledby="xiTitle">
       <header class="section-head reveal">
         <p class="kicker">02 · Line-up</p>
-        <h2 class="section-title" id="xiTitle">The highest predicted <em>XI</em></h2>
-        <p class="section-sub">The top-scoring player for every slot in the formation. No budget limit yet; the cost is shown so you can compare.</p>
+        <h2 class="section-title" id="xiTitle">The best <em>XI</em></h2>
+        <p class="section-sub" id="xiSub">The best legal FPL squad for £100m: 15 players, at most 3 per club, picked by an optimiser from the predictions.</p>
       </header>
       <div class="xi-layout">
         <div class="xi-stage reveal" id="xiStage">
@@ -132,12 +132,20 @@
             </div>
             <div class="xi-players" id="xiPlayers"></div>
           </div>
+          <div class="xi-bench" id="xiBench" hidden></div>
         </div>
         <aside class="xi-panel reveal">
-          <div class="formation-picker" role="radiogroup" aria-label="Formation" id="formationPicker"></div>
+          <div class="xi-controls">
+            <div class="seg" role="radiogroup" aria-label="Line-up" id="xiMode">
+              <button role="radio" aria-checked="true" data-mode="squad">£100m squad</button>
+              <button role="radio" aria-checked="false" data-mode="dream">Dream XI</button>
+            </div>
+            <div class="seg" role="radiogroup" aria-label="Planning horizon" id="xiHorizon"></div>
+            <div class="formation-picker" role="radiogroup" aria-label="Formation" id="formationPicker" hidden></div>
+          </div>
           <dl class="xi-totals">
-            <div><dt>Predicted points</dt><dd id="xiPoints">–</dd><small>captain counted twice</small></div>
-            <div><dt>Squad cost</dt><dd id="xiCost">–</dd><small>starting XI only</small></div>
+            <div><dt id="xiPointsLabel">Predicted points</dt><dd id="xiPoints">–</dd><small id="xiPointsNote">captain counted twice</small></div>
+            <div><dt id="xiCostLabel">Squad cost</dt><dd id="xiCost">–</dd><small id="xiCostNote"></small></div>
           </dl>
           <ol class="xi-list" id="xiList"></ol>
         </aside>

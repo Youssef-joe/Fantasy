@@ -21,6 +21,8 @@ OUTPUT_DIR = os.path.join(PROJECT_ROOT, "frontend", "data", "predictions")
 RAW_DIR = os.path.join(PROJECT_ROOT, "data", "raw")
 FEED_VERSION = 2
 FIXTURES_AHEAD = 5
+BUDGET = 100.0     # FPL starting budget, £m
+HORIZON = 3        # gameweeks for the planning squad
 
 sys.path.insert(0, PROJECT_ROOT)
 sys.path.insert(0, CURRENT_DIR)
@@ -133,6 +135,47 @@ def build_manifest(season: str, latest_gameweek: int, deadline_time: str) -> dic
     }
 
 
+def build_squads(feed: dict, predict_gameweek, budget: float = BUDGET) -> dict:
+    """
+    Best legal squads for the budget: one for the coming gameweek, one for the
+    next HORIZON gameweeks added together (better for planning, since transfers
+    are limited). Prices are today's.
+    """
+    from squad import best_squad
+
+    gw = feed['gameweek']
+    by_id = {p['player_id']: p for p in feed['predictions']}
+    horizon_gws = [g for g in range(gw, gw + HORIZON) if g <= 38]
+    totals = {pid: p['predicted_points'] for pid, p in by_id.items()}
+    for g in horizon_gws[1:]:
+        later, _ = predict_gameweek(g, top_n=None)
+        for p in later:
+            if p['player_id'] in totals:
+                totals[p['player_id']] += p['predicted_points']
+
+    horizons = []
+    for key, label, gws, points in (
+        ('gw', f"GW{gw}", [gw], {pid: p['predicted_points'] for pid, p in by_id.items()}),
+        ('multi', f"GW{horizon_gws[0]}–{horizon_gws[-1]}", horizon_gws, totals),
+    ):
+        if key == 'multi' and len(gws) < 2:
+            continue
+        pool = [dict(p, points=points[pid]) for pid, p in by_id.items()]
+        sq = best_squad(pool, budget=budget)
+        sq.update({
+            'key': key, 'label': label, 'gameweeks': gws,
+            'players': {
+                str(pid): {'web_name': by_id[pid]['web_name'], 'team': by_id[pid]['team'],
+                           'position': by_id[pid]['position'], 'price': by_id[pid]['price'],
+                           'points': round(points[pid], 2), 'points_this_gw': by_id[pid]['predicted_points']}
+                for pid in sq['squad']
+            },
+        })
+        horizons.append(sq)
+    return {'season': feed['season'], 'gameweek': gw, 'budget': budget,
+            'generated_at': feed['generated_at'], 'horizons': horizons}
+
+
 def export_predictions_for_gameweek(gameweek: int = None):
     from predict import predict_gameweek
 
@@ -152,7 +195,7 @@ def export_predictions_for_gameweek(gameweek: int = None):
     if not predictions:
         raise RuntimeError(
             f"No predictions produced for GW{gameweek}; refusing to overwrite the feed. "
-            "Check that the database is populated and the model is trained."
+            "Check that data/raw is scraped and the model is trained."
         )
     print(f"✓ Retrieved {len(predictions)} predictions from ML model for GW{gameweek}")
 
@@ -179,6 +222,11 @@ def export_predictions_for_gameweek(gameweek: int = None):
     write_json(out_file, feed)
     if gameweek == info['next_gameweek']:
         write_json(os.path.join(OUTPUT_DIR, 'latest.json'), feed)
+        squads = build_squads(feed, predict_gameweek)
+        write_json(os.path.join(OUTPUT_DIR, 'squad.json'), squads)
+        for h in squads['horizons']:
+            print(f"✓ £{squads['budget']}m squad for {h['label']}: {h['formation']}, "
+                  f"£{h['cost']}m, {h['points']} predicted pts")
     latest = info['next_gameweek'] or gameweek
     write_json(os.path.join(OUTPUT_DIR, 'manifest.json'),
                build_manifest(info['season'], latest, info['deadline_time']))

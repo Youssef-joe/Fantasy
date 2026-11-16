@@ -347,21 +347,41 @@ function renderPicks() {
 /* best XI                                                             */
 /* ------------------------------------------------------------------ */
 
+// The pitch shows either the optimiser's £100m squad (from squad.json) or the
+// "dream XI": the top predicted player for every slot, ignoring price.
+const xiState = { mode: 'squad', formation: null, horizon: 'gw' };
+let SQUADS = null;
+
 function pickXI(formation) {
   const [d, m, f] = formation.split('-').map(Number);
   const pool = FEED.predictions.filter(canPlay);
   const top = (pos, n) => pool.filter((p) => p.position === pos).slice(0, n);
   const lines = { GKP: top('GKP', 1), DEF: top('DEF', d), MID: top('MID', m), FWD: top('FWD', f) };
   const all = [...lines.GKP, ...lines.DEF, ...lines.MID, ...lines.FWD];
-  const captain = all.reduce((a, b) => (b.predicted_points > a.predicted_points ? b : a), all[0]);
-  const points = all.reduce((s, p) => s + p.predicted_points, 0) + (captain?.predicted_points || 0);
+  const byPts = [...all].sort((a, b) => b.predicted_points - a.predicted_points);
+  const points = all.reduce((s, p) => s + p.predicted_points, 0) + (byPts[0]?.predicted_points || 0);
   const cost = all.reduce((s, p) => s + (p.price || 0), 0);
-  return { lines, all, captain, points, cost };
+  return {
+    lines, all, bench: [], captainId: byPts[0]?.player_id, viceId: byPts[1]?.player_id,
+    points, cost, pts: (p) => p.predicted_points,
+  };
+}
+
+function squadLineup(h) {
+  const get = (id) => ({ ...(BY_ID.get(id) || {}), ...h.players[String(id)], player_id: id });
+  const all = h.starting.map(get);
+  const lines = { GKP: [], DEF: [], MID: [], FWD: [] };
+  all.forEach((p) => lines[p.position].push(p));
+  return {
+    lines, all, bench: h.bench.map(get), captainId: h.captain, viceId: h.vice_captain,
+    points: h.points, cost: h.cost, pts: (p) => p.points,
+  };
 }
 
 function renderXI() {
   const results = FORMATIONS.map((f) => ({ f, ...pickXI(f) }));
   const best = results.reduce((a, b) => (b.points > a.points ? b : a));
+  xiState.formation = best.f;
   const picker = $('#formationPicker');
   picker.innerHTML = FORMATIONS.map((f) =>
     `<button role="radio" aria-checked="${f === best.f}" data-f="${f}" title="${f === best.f ? 'Highest-scoring formation' : ''}">${f}${f === best.f ? ' ★' : ''}</button>`).join('');
@@ -369,9 +389,44 @@ function renderXI() {
     const b = e.target.closest('button');
     if (!b) return;
     $$('button', picker).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
-    drawXI(b.dataset.f);
+    xiState.formation = b.dataset.f;
+    drawXI();
   });
   picker.addEventListener('keydown', (e) => radioKeys(e, picker));
+
+  const modeGroup = $('#xiMode');
+  modeGroup.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    $$('button', modeGroup).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+    xiState.mode = b.dataset.mode;
+    drawXI();
+  });
+  modeGroup.addEventListener('keydown', (e) => radioKeys(e, modeGroup));
+
+  const horizonGroup = $('#xiHorizon');
+  horizonGroup.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    $$('button', horizonGroup).forEach((x) => x.setAttribute('aria-checked', String(x === b)));
+    xiState.horizon = b.dataset.h;
+    drawXI();
+  });
+  horizonGroup.addEventListener('keydown', (e) => radioKeys(e, horizonGroup));
+
+  const squadsReady = fetch('data/predictions/squad.json', { cache: 'no-cache' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((s) => {
+      if (s?.gameweek === FEED.gameweek && s.horizons?.length) {
+        SQUADS = s;
+        horizonGroup.innerHTML = s.horizons.map((h, i) =>
+          `<button role="radio" aria-checked="${i === 0}" data-h="${h.key}">${h.gameweeks.length > 1 ? `Next ${h.gameweeks.length} GWs` : `This GW`}</button>`).join('');
+      }
+    })
+    .catch(() => null)
+    .finally(() => {
+      if (!SQUADS) { xiState.mode = 'dream'; modeGroup.hidden = true; }
+    });
 
   // pitch tilts toward the pointer
   const stage = $('#xiStage'), pitch = $('#xiPitch');
@@ -386,11 +441,26 @@ function renderXI() {
   }
 
   // first draw when the pitch scrolls into view, so players "walk on"
-  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { drawXI(best.f); obs.disconnect(); } }, { threshold: 0.25 }).observe(stage);
+  new IntersectionObserver(([e], obs) => {
+    if (e.isIntersecting) { obs.disconnect(); squadsReady.then(drawXI); }
+  }, { threshold: 0.25 }).observe(stage);
 }
 
-function drawXI(formation) {
-  const xi = pickXI(formation);
+function drawXI() {
+  const squadMode = xiState.mode === 'squad' && SQUADS;
+  const h = squadMode ? (SQUADS.horizons.find((x) => x.key === xiState.horizon) || SQUADS.horizons[0]) : null;
+  const xi = squadMode ? squadLineup(h) : pickXI(xiState.formation);
+
+  $('#formationPicker').hidden = !!squadMode;
+  $('#xiHorizon').hidden = !squadMode;
+  $('#xiSub').textContent = squadMode
+    ? `The best legal FPL squad for £${SQUADS.budget}m: 15 players, at most 3 per club, picked by an optimiser to maximise predicted points for ${h.gameweeks.length > 1 ? `GW${h.gameweeks[0]}–${h.gameweeks.at(-1)}` : `GW${h.gameweeks[0]}`}.`
+    : 'The top predicted player for every slot in the formation, ignoring price. Useful for captain and transfer ideas, but not a squad you could afford.';
+  $('#xiPointsLabel').textContent = squadMode && h.gameweeks.length > 1 ? `Predicted points, ${h.gameweeks.length} GWs` : 'Predicted points';
+  $('#xiPointsNote').textContent = 'starting XI, captain counted twice';
+  $('#xiCostLabel').textContent = squadMode ? 'Squad cost' : 'XI cost';
+  $('#xiCostNote').textContent = squadMode ? `15 players · £${(SQUADS.budget - h.cost).toFixed(1)}m in the bank` : 'starting XI only, no budget';
+
   const container = $('#xiPlayers');
   const rowsY = { FWD: 15, MID: 38, DEF: 62, GKP: 86 };
   const existing = new Map($$('.token', container).map((el) => [Number(el.dataset.id), el]));
@@ -408,10 +478,10 @@ function drawXI(formation) {
         el.className = 'token entering';
         el.dataset.id = p.player_id;
         el.innerHTML = `
-          <div class="token-body" tabindex="0" role="button" aria-label="${esc(p.web_name)}, ${esc(p.team)}, ${f1(p.predicted_points)} predicted points">
+          <div class="token-body" tabindex="0" role="button">
             <div class="token-shirt" style="--c1:${t.c1};--c2:${t.c2}"><b>${esc(p.team)}</b></div>
             <div class="token-name">${esc(p.web_name)}</div>
-            <div class="token-pts">${f1(p.predicted_points)}</div>
+            <div class="token-pts"></div>
           </div>`;
         const body = $('.token-body', el);
         body.addEventListener('click', () => openPlayer(p.player_id));
@@ -425,25 +495,46 @@ function drawXI(formation) {
         el.style.setProperty('--x', `${x}%`);
         el.style.setProperty('--y', `${y}%`);
       }
+      // points and armbands change between modes and horizons, so refresh them every draw
+      const role = p.player_id === xi.captainId ? 'captain' : p.player_id === xi.viceId ? 'vice-captain' : '';
+      $('.token-pts', el).textContent = f1(xi.pts(p));
+      $('.token-body', el).setAttribute('aria-label',
+        `${p.web_name}, ${p.team}, ${f1(xi.pts(p))} predicted points${role ? `, ${role}` : ''}`);
       const shirt = $('.token-shirt', el);
       $('.token-armband', shirt)?.remove();
-      if (p.player_id === xi.captain.player_id) shirt.insertAdjacentHTML('beforeend', '<span class="token-armband" aria-label="Captain">C</span>');
+      if (role === 'captain') shirt.insertAdjacentHTML('beforeend', '<span class="token-armband" aria-hidden="true">C</span>');
+      if (role === 'vice-captain') shirt.insertAdjacentHTML('beforeend', '<span class="token-armband vice" aria-hidden="true">V</span>');
     });
   }
   existing.forEach((el, id) => {
     if (!keep.has(id)) { el.classList.add('leaving'); setTimeout(() => el.remove(), 500); }
   });
 
+  const bench = $('#xiBench');
+  bench.hidden = !xi.bench.length;
+  bench.innerHTML = xi.bench.map((p, i) => `
+    <div class="bench-card" tabindex="0" role="button" data-id="${p.player_id}" style="--d:${REDUCED ? 0 : 400 + i * 80}ms"
+         aria-label="Bench ${i + 1}: ${esc(p.web_name)}, ${f1(xi.pts(p))} predicted points">
+      ${teamChip(p.team)}<b>${esc(p.web_name)}</b><span class="p">${f1(xi.pts(p))}</span>
+    </div>`).join('');
+
   countUp($('#xiPoints'), xi.points, { decimals: 1, duration: 900 });
   $('#xiCost').textContent = money(xi.cost);
-  $('#xiList').innerHTML = xi.all.map((p) => `
-    <li tabindex="0" data-id="${p.player_id}">
+  const row = (p, cls = '') => `
+    <li tabindex="0" data-id="${p.player_id}" class="${cls}">
       <span class="pos pos-${p.position}">${p.position}</span>
-      <span class="n">${esc(p.web_name)}${p.player_id === xi.captain.player_id ? ' <span class="volt">(C)</span>' : ''}</span>
+      <span class="n">${esc(p.web_name)}${p.player_id === xi.captainId ? ' <span class="volt">(C)</span>' : p.player_id === xi.viceId ? ' <span class="volt">(V)</span>' : ''}</span>
       <span class="c">${money(p.price)}</span>
-      <span class="p">${f1(p.predicted_points)}</span>
-    </li>`).join('');
-  $$('#xiList li').forEach((li) => {
+      <span class="p">${f1(xi.pts(p))}</span>
+    </li>`;
+  $('#xiList').innerHTML = xi.all.map((p) => row(p)).join('')
+    + (xi.bench.length ? `<li class="sub" aria-hidden="true">Bench</li>${xi.bench.map((p) => row(p, 'bench')).join('')}` : '');
+  $$('#xiBench .bench-card').forEach((card) => {
+    const open = () => openPlayer(Number(card.dataset.id));
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  });
+  $$('#xiList li[data-id]').forEach((li) => {
     const open = () => openPlayer(Number(li.dataset.id));
     li.addEventListener('click', open);
     li.addEventListener('keydown', (e) => { if (e.key === 'Enter') open(); });

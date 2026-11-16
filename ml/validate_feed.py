@@ -60,6 +60,33 @@ def validate_feed(feed: dict) -> list:
     return errors
 
 
+def validate_squad(squads: dict) -> list:
+    """Every squad must be legal under FPL rules."""
+    errors = []
+    shape = {'GKP': 2, 'DEF': 5, 'MID': 5, 'FWD': 3}
+    for h in squads.get('horizons', []):
+        where = f"squad {h.get('label')}"
+        players = h.get('players', {})
+        squad = [players.get(str(pid)) for pid in h.get('squad', [])]
+        if len(squad) != 15 or None in squad:
+            errors.append(f"{where}: expected 15 players with details, got {len(squad)}")
+            continue
+        for pos, n in shape.items():
+            if sum(p['position'] == pos for p in squad) != n:
+                errors.append(f"{where}: needs {n} {pos}")
+        clubs = {}
+        for p in squad:
+            clubs[p['team']] = clubs.get(p['team'], 0) + 1
+        if max(clubs.values()) > 3:
+            errors.append(f"{where}: more than 3 players from one club")
+        cost = sum(p['price'] for p in squad)
+        if cost > squads.get('budget', 100.0) + 1e-6:
+            errors.append(f"{where}: costs £{cost:.1f}m, over budget")
+        if len(h.get('starting', [])) != 11 or h.get('captain') not in h.get('starting', []):
+            errors.append(f"{where}: needs 11 starters including the captain")
+    return errors
+
+
 def validate_manifest(manifest: dict, predictions_dir: str) -> list:
     errors = []
     for gw in manifest.get('available_gameweeks', []):
@@ -75,6 +102,10 @@ def main(paths):
         paths = [os.path.join(pred_dir, 'latest.json')]
         with open(os.path.join(pred_dir, 'manifest.json')) as f:
             manifest_errors = validate_manifest(json.load(f), pred_dir)
+        squad_path = os.path.join(pred_dir, 'squad.json')
+        if os.path.exists(squad_path):
+            with open(squad_path) as f:
+                manifest_errors += [f"squad.json: {e}" for e in validate_squad(json.load(f))]
     else:
         manifest_errors = []
 

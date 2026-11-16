@@ -92,6 +92,16 @@ Feed format (`feed_version: 2`):
 | `injured_players[]` | players FPL flags (injured, suspended, doubtful…) who have played this season, most-owned first |
 | `fixtures_by_team` | next 5 gameweeks of fixtures per team with FPL difficulty (1-5) |
 
+`squad.json` is written by the export for the coming gameweek. It holds the best legal £100m squads, chosen by `ml/squad.py`, a mixed-integer program solved with `scipy.optimize.milp`:
+
+- **Rules:** 15 players (2 GKP, 5 DEF, 5 MID, 3 FWD), at most 3 per club, a valid XI and a captain.
+- **Objective:** predicted points of the XI, with the captain counted twice and a small weight for the bench.
+- **Two horizons:**
+  - `gw`: the coming gameweek
+  - `multi`: the next 3 gameweeks added together, which is better for squad planning since transfers are limited
+- **Prices** are today's.
+- **Checking:** `ml/validate_feed.py` checks every squad against the FPL rules.
+
 `accuracy.json` is written by `ml/accuracy.py` and feeds the site's track-record section:
 
 - **`live[]`:** one entry for every gameweek this season that FPL has finished and confirmed. It scores the predictions published for that gameweek (`gwNN.json`, frozen at the deadline) against real points:
