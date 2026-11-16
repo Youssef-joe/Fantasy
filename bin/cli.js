@@ -104,29 +104,31 @@ program.command('predict')
     });
   });
 
-program.command('api')
-  .description('Start the API server')
-  .action(() => {
-    const spinner = ora(chalk.magenta('Starting API server...')).start();
-    const child = require('child_process').spawn('python', ['-m', 'uvicorn', 'backend.main:app', '--reload'], { stdio: 'inherit' });
-    child.on('error', (error) => {
-      spinner.fail(chalk.red(`Failed to start API: ${error.message}`));
+program.command('export')
+  .description('Export predictions to the static JSON feed in frontend/data/predictions')
+  .requiredOption('-g, --gameweek <number>', 'Gameweek number')
+  .action((options) => {
+    const spinner = ora(chalk.cyan(`Exporting predictions for GW${options.gameweek}...`)).start();
+    const cmd = `python ml/export_predictions.py ${parseInt(options.gameweek, 10)}`;
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        spinner.fail(chalk.red(`Export failed: ${error.message}`));
+        if (stderr) console.error(stderr);
+        process.exitCode = 1;
+        return;
+      }
+      spinner.succeed(chalk.green('Predictions exported'));
+      console.log(stdout);
     });
-    setTimeout(() => {
-      if (spinner.isSpinning) spinner.succeed(chalk.green('API server started successfully'));
-    }, 3000);
   });
 
-program.command('dashboard')
-  .description('Open dashboard in browser')
+program.command('serve')
+  .description('Serve the frontend locally at http://localhost:3000')
   .action(() => {
-    const spinner = ora(chalk.yellow('Opening dashboard...')).start();
-    exec('open frontend/dashboard.html', (error) => {
-      if (error) {
-        spinner.fail(chalk.red('Failed to open dashboard. Please open frontend/dashboard.html manually.'));
-      } else {
-        spinner.succeed(chalk.green('Dashboard opened in browser'));
-      }
+    console.log(chalk.yellow('Serving frontend/ at http://localhost:3000 (Ctrl+C to stop)'));
+    const child = require('child_process').spawn('python', ['-m', 'http.server', '3000', '--directory', 'frontend'], { stdio: 'inherit' });
+    child.on('error', (error) => {
+      console.error(chalk.red(`Failed to start server: ${error.message}`));
     });
   });
 

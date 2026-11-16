@@ -7,3 +7,6 @@ venv/
 !frontend/data/
 node_modules/
 .next/
+*.log
+*.joblib
+.vercel

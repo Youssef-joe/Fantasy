@@ -895,7 +895,7 @@
                 <div class="px-6 py-4 bg-black/60 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-400 gap-3">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span>API Server: <strong class="text-white" id="apiStatusBadge">Connecting...</strong></span>
+                        <span>Data source: <strong class="text-white" id="apiStatusBadge">Connecting...</strong></span>
                         <span class="text-zinc-600">•</span>
                         <span>Auto-fallback engaged for offline exploration</span>
                     </div>
@@ -955,8 +955,7 @@
             </div>
             <div class="flex items-center gap-6">
                 <a href="#hero" class="hover:text-white transition">Back to Top</a>
-                <a href="dashboard.html" class="hover:text-white transition">Legacy Dashboard</a>
-                <a href="http://localhost:8000/docs" target="_blank" class="hover:text-brand-gold transition">FastAPI Swagger Docs</a>
+                <a href="dashboard.html" class="hover:text-white transition">Dashboard</a>
             </div>
         </div>
     </footer>
@@ -1377,7 +1376,7 @@
             document.getElementById('pitch-studio').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 4. Live Predictor Lab: Integration with FastAPI and Offline Fallback
+        // 4. Live Predictor Lab: static prediction feed with offline fallback
         const SAMPLE_PREDICTIONS = [
             { player_id: 1, player_name: "Erling Haaland", team: "MCI", position: "FWD", opponent: "WOL", is_home: "HOME", predicted_points: 10.84, avg_last_5: 9.40, status: null },
             { player_id: 2, player_name: "Phil Foden", team: "MCI", position: "MID", opponent: "WOL", is_home: "HOME", predicted_points: 9.85, avg_last_5: 9.20, status: null },
@@ -1398,32 +1397,11 @@
         let allPredictions = [];
         let activePosFilter = 'ALL';
 
-        // Dynamic API Base URL supporting Vercel and local environments
-        const API_BASE = window.API_BASE_URL || (['localhost', '127.0.0.1'].includes(window.location.hostname) ? 'http://localhost:8000' : '');
-
         async function fetchPredictions() {
             const gw = document.getElementById('gwInput').value || 38;
             const statusBadge = document.getElementById('apiStatusBadge');
             
-            // Step 1: If local API server is explicitly running, attempt live query
-            if (['localhost', '127.0.0.1'].includes(window.location.hostname)) {
-                try {
-                    statusBadge.textContent = "Connecting to Local ML API...";
-                    const res = await fetch(`http://localhost:8000/predict/?gameweek=${gw}&top_n=50`, { signal: AbortSignal.timeout(1500) });
-                    if (res.ok) {
-                        const data = await res.json();
-                        allPredictions = data.predictions || [];
-                        statusBadge.textContent = "Connected (Local Live ML)";
-                        statusBadge.className = "text-emerald-400 font-bold";
-                        renderPredictionsTable();
-                        return;
-                    }
-                } catch (e) {
-                    console.log("Local API not running, checking static pre-generated JSON feed...");
-                }
-            }
-
-            // Step 2 (Option B): Fetch pre-generated Jamstack static feed (Vercel Global CDN)
+            // Step 1: Static prediction feed
             try {
                 statusBadge.textContent = "Loading Global CDN Feed...";
                 let staticUrl = `data/predictions/gw${gw}.json`;
@@ -1444,7 +1422,7 @@
                 console.warn("Static feed fetch note:", err.message);
             }
 
-            // Step 3: In-memory fallback
+            // Step 2: In-memory fallback
             allPredictions = SAMPLE_PREDICTIONS;
             statusBadge.textContent = "Edge Demo Mode (Seeded Dataset)";
             statusBadge.className = "text-brand-gold font-bold";
