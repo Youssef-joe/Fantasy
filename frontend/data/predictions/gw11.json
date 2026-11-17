@@ -8,7 +8,7 @@
     13
   ],
   "deadline_time": "2026-11-21T11:00:00Z",
-  "generated_at": "2026-11-16T15:28:07Z",
+  "generated_at": "2026-11-17T15:47:34Z",
   "data_source": "FPL API",
   "model": {
     "split": "by gameweek",
@@ -94,7 +94,7 @@
     "loss": "poisson",
     "n_features": 26,
     "n_train": 93327,
-    "trained_at": "2026-11-16T15:28:05Z"
+    "trained_at": "2026-11-17T15:47:31Z"
   },
   "predictions": [
     {
@@ -141,7 +141,7 @@
       "points_horizon": 16.61,
       "web_name": "N.Jackson",
       "price": 7.1,
-      "selected_by_percent": 31.5,
+      "selected_by_percent": 31.7,
       "chance_of_playing": null,
       "news": null
     },
@@ -309,7 +309,7 @@
       "points_horizon": 12.34,
       "web_name": "Tavernier",
       "price": 6.7,
-      "selected_by_percent": 31.5,
+      "selected_by_percent": 31.6,
       "chance_of_playing": null,
       "news": null
     },
@@ -333,7 +333,7 @@
       "points_horizon": 12.39,
       "web_name": "Evanilson",
       "price": 6.5,
-      "selected_by_percent": 24.0,
+      "selected_by_percent": 24.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -381,7 +381,7 @@
       "points_horizon": 12.24,
       "web_name": "Van Hecke",
       "price": 5.1,
-      "selected_by_percent": 14.9,
+      "selected_by_percent": 15.0,
       "chance_of_playing": 100,
       "news": null
     },
@@ -429,7 +429,7 @@
       "points_horizon": 12.8,
       "web_name": "Wirtz",
       "price": 7.2,
-      "selected_by_percent": 5.7,
+      "selected_by_percent": 5.8,
       "chance_of_playing": 100,
       "news": null
     },
@@ -981,7 +981,7 @@
       "points_horizon": 10.06,
       "web_name": "Konsa",
       "price": 4.9,
-      "selected_by_percent": 24.7,
+      "selected_by_percent": 24.8,
       "chance_of_playing": 100,
       "news": null
     },
@@ -1149,7 +1149,7 @@
       "points_horizon": 10.34,
       "web_name": "Truffert",
       "price": 5.4,
-      "selected_by_percent": 3.3,
+      "selected_by_percent": 3.4,
       "chance_of_playing": null,
       "news": null
     },
@@ -1341,7 +1341,7 @@
       "points_horizon": 9.69,
       "web_name": "Vuskovic",
       "price": 5.3,
-      "selected_by_percent": 9.5,
+      "selected_by_percent": 9.6,
       "chance_of_playing": null,
       "news": null
     },
@@ -1629,7 +1629,7 @@
       "points_horizon": 10.8,
       "web_name": "Barnes",
       "price": 6.1,
-      "selected_by_percent": 6.6,
+      "selected_by_percent": 6.5,
       "chance_of_playing": null,
       "news": null
     },
@@ -1677,7 +1677,7 @@
       "points_horizon": 9.36,
       "web_name": "Havertz",
       "price": 7.4,
-      "selected_by_percent": 6.0,
+      "selected_by_percent": 5.9,
       "chance_of_playing": 100,
       "news": null
     },
@@ -1701,7 +1701,7 @@
       "points_horizon": 10.36,
       "web_name": "Barry",
       "price": 5.7,
-      "selected_by_percent": 10.8,
+      "selected_by_percent": 10.9,
       "chance_of_playing": null,
       "news": null
     },
@@ -2229,7 +2229,7 @@
       "points_horizon": 9.73,
       "web_name": "Hall",
       "price": 5.2,
-      "selected_by_percent": 18.2,
+      "selected_by_percent": 18.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -2805,7 +2805,7 @@
       "points_horizon": 6.75,
       "web_name": "Gvardiol",
       "price": 5.6,
-      "selected_by_percent": 22.4,
+      "selected_by_percent": 22.3,
       "chance_of_playing": 75,
       "news": "Unspecified injury - 75% chance of playing"
     },
@@ -3477,7 +3477,7 @@
       "points_horizon": 9.58,
       "web_name": "King",
       "price": 5.5,
-      "selected_by_percent": 3.3,
+      "selected_by_percent": 3.2,
       "chance_of_playing": 100,
       "news": null
     },
@@ -3698,30 +3698,6 @@
       "news": null
     },
     {
-      "player_id": 469,
-      "player_name": "Neco Williams",
-      "team": "NFO",
-      "position": "DEF",
-      "opponent": "BOU",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "BOU",
-          "is_home": "AWAY",
-          "predicted_points": 2.38
-        }
-      ],
-      "predicted_points": 2.38,
-      "avg_last_5": 3.0,
-      "status": null,
-      "points_horizon": 9.58,
-      "web_name": "N.Williams",
-      "price": 4.9,
-      "selected_by_percent": 5.3,
-      "chance_of_playing": 100,
-      "news": null
-    },
-    {
       "player_id": 565,
       "player_name": "Mamadou Sangaré",
       "team": "BRE",
@@ -3933,7 +3909,7 @@
       "points_horizon": 8.4,
       "web_name": "Lammens",
       "price": 4.8,
-      "selected_by_percent": 7.2,
+      "selected_by_percent": 7.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -3957,7 +3933,7 @@
       "points_horizon": 8.11,
       "web_name": "Slater",
       "price": 4.5,
-      "selected_by_percent": 4.3,
+      "selected_by_percent": 4.2,
       "chance_of_playing": null,
       "news": null
     },
@@ -4127,30 +4103,6 @@
       "price": 4.5,
       "selected_by_percent": 2.4,
       "chance_of_playing": null,
-      "news": null
-    },
-    {
-      "player_id": 586,
-      "player_name": "Nobel Mendy",
-      "team": "HUL",
-      "position": "DEF",
-      "opponent": "BHA",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "BHA",
-          "is_home": "HOME",
-          "predicted_points": 2.23
-        }
-      ],
-      "predicted_points": 2.23,
-      "avg_last_5": 1.8,
-      "status": null,
-      "points_horizon": 8.32,
-      "web_name": "Mendy",
-      "price": 4.1,
-      "selected_by_percent": 4.5,
-      "chance_of_playing": 100,
       "news": null
     },
     {
@@ -4965,7 +4917,7 @@
       "points_horizon": 5.55,
       "web_name": "Eze",
       "price": 6.2,
-      "selected_by_percent": 1.1,
+      "selected_by_percent": 1.0,
       "chance_of_playing": null,
       "news": null
     },
@@ -5522,30 +5474,6 @@
       "news": null
     },
     {
-      "player_id": 84,
-      "player_name": "Nathan Collins",
-      "team": "BRE",
-      "position": "DEF",
-      "opponent": "EVE",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "EVE",
-          "is_home": "HOME",
-          "predicted_points": 1.81
-        }
-      ],
-      "predicted_points": 1.81,
-      "avg_last_5": 0.2,
-      "status": null,
-      "points_horizon": 5.56,
-      "web_name": "Collins",
-      "price": 5.4,
-      "selected_by_percent": 0.8,
-      "chance_of_playing": 100,
-      "news": null
-    },
-    {
       "player_id": 305,
       "player_name": "Leif Davis",
       "team": "IPS",
@@ -5618,6 +5546,30 @@
       "news": null
     },
     {
+      "player_id": 469,
+      "player_name": "Neco Williams",
+      "team": "NFO",
+      "position": "DEF",
+      "opponent": "BOU",
+      "is_home": "AWAY",
+      "fixtures": [
+        {
+          "opponent": "BOU",
+          "is_home": "AWAY",
+          "predicted_points": 1.78
+        }
+      ],
+      "predicted_points": 1.78,
+      "avg_last_5": 3.0,
+      "status": "Doubtful",
+      "points_horizon": 7.18,
+      "web_name": "N.Williams",
+      "price": 4.9,
+      "selected_by_percent": 5.3,
+      "chance_of_playing": 75,
+      "news": "Ankle injury - 75% chance of playing"
+    },
+    {
       "player_id": 617,
       "player_name": "Mohamed-Ali Cho",
       "team": "HUL",
@@ -5684,7 +5636,7 @@
       "status": null,
       "points_horizon": 5.09,
       "web_name": "Cook",
-      "price": 5.0,
+      "price": 4.9,
       "selected_by_percent": 0.1,
       "chance_of_playing": null,
       "news": null
@@ -5904,6 +5856,30 @@
       "selected_by_percent": 0.1,
       "chance_of_playing": null,
       "news": null
+    },
+    {
+      "player_id": 586,
+      "player_name": "Nobel Mendy",
+      "team": "HUL",
+      "position": "DEF",
+      "opponent": "BHA",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "BHA",
+          "is_home": "HOME",
+          "predicted_points": 1.68
+        }
+      ],
+      "predicted_points": 1.68,
+      "avg_last_5": 1.8,
+      "status": "Doubtful",
+      "points_horizon": 6.25,
+      "web_name": "Mendy",
+      "price": 4.1,
+      "selected_by_percent": 4.5,
+      "chance_of_playing": 75,
+      "news": "Knee injury - 75% chance of playing"
     },
     {
       "player_id": 144,
@@ -6260,7 +6236,7 @@
       "status": null,
       "points_horizon": 4.02,
       "web_name": "Mingueza",
-      "price": 4.3,
+      "price": 4.2,
       "selected_by_percent": 0.0,
       "chance_of_playing": null,
       "news": null
@@ -6602,30 +6578,6 @@
       "news": null
     },
     {
-      "player_id": 90,
-      "player_name": "Aaron Hickey",
-      "team": "BRE",
-      "position": "DEF",
-      "opponent": "EVE",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "EVE",
-          "is_home": "HOME",
-          "predicted_points": 1.39
-        }
-      ],
-      "predicted_points": 1.39,
-      "avg_last_5": 0.8,
-      "status": null,
-      "points_horizon": 3.89,
-      "web_name": "Hickey",
-      "price": 4.5,
-      "selected_by_percent": 0.1,
-      "chance_of_playing": null,
-      "news": null
-    },
-    {
       "player_id": 551,
       "player_name": "Nilson Angulo",
       "team": "SUN",
@@ -6696,6 +6648,30 @@
       "selected_by_percent": 0.3,
       "chance_of_playing": null,
       "news": null
+    },
+    {
+      "player_id": 84,
+      "player_name": "Nathan Collins",
+      "team": "BRE",
+      "position": "DEF",
+      "opponent": "EVE",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "EVE",
+          "is_home": "HOME",
+          "predicted_points": 1.35
+        }
+      ],
+      "predicted_points": 1.35,
+      "avg_last_5": 0.2,
+      "status": "Doubtful",
+      "points_horizon": 4.17,
+      "web_name": "Collins",
+      "price": 5.4,
+      "selected_by_percent": 0.8,
+      "chance_of_playing": 75,
+      "news": "Knee injury - 75% chance of playing"
     },
     {
       "player_id": 9,
@@ -7005,7 +6981,7 @@
       "points_horizon": 3.47,
       "web_name": "Xhaka",
       "price": 5.3,
-      "selected_by_percent": 2.6,
+      "selected_by_percent": 2.5,
       "chance_of_playing": 75,
       "news": "Calf injury - 75% chance of playing"
     },
@@ -7174,6 +7150,30 @@
       "web_name": "Belloumi",
       "price": 5.3,
       "selected_by_percent": 9.5,
+      "chance_of_playing": 75,
+      "news": "Hamstring injury - 75% chance of playing"
+    },
+    {
+      "player_id": 90,
+      "player_name": "Aaron Hickey",
+      "team": "BRE",
+      "position": "DEF",
+      "opponent": "EVE",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "EVE",
+          "is_home": "HOME",
+          "predicted_points": 1.04
+        }
+      ],
+      "predicted_points": 1.04,
+      "avg_last_5": 0.8,
+      "status": "Doubtful",
+      "points_horizon": 2.91,
+      "web_name": "Hickey",
+      "price": 4.5,
+      "selected_by_percent": 0.1,
       "chance_of_playing": 75,
       "news": "Hamstring injury - 75% chance of playing"
     },
@@ -7682,30 +7682,6 @@
       "news": null
     },
     {
-      "player_id": 19,
-      "player_name": "Martín Zubimendi Ibáñez",
-      "team": "ARS",
-      "position": "MID",
-      "opponent": "NEW",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "NEW",
-          "is_home": "AWAY",
-          "predicted_points": 0.82
-        }
-      ],
-      "predicted_points": 0.82,
-      "avg_last_5": 0.4,
-      "status": null,
-      "points_horizon": 2.48,
-      "web_name": "Zubimendi",
-      "price": 5.2,
-      "selected_by_percent": 0.4,
-      "chance_of_playing": 100,
-      "news": null
-    },
-    {
       "player_id": 535,
       "player_name": "Omar Alderete",
       "team": "SUN",
@@ -7965,7 +7941,7 @@
       "points_horizon": 2.29,
       "web_name": "Cash",
       "price": 4.3,
-      "selected_by_percent": 3.6,
+      "selected_by_percent": 3.5,
       "chance_of_playing": 75,
       "news": "Concussion - 75% chance of playing"
     },
@@ -8208,6 +8184,30 @@
       "selected_by_percent": 0.1,
       "chance_of_playing": null,
       "news": null
+    },
+    {
+      "player_id": 19,
+      "player_name": "Martín Zubimendi Ibáñez",
+      "team": "ARS",
+      "position": "MID",
+      "opponent": "NEW",
+      "is_home": "AWAY",
+      "fixtures": [
+        {
+          "opponent": "NEW",
+          "is_home": "AWAY",
+          "predicted_points": 0.61
+        }
+      ],
+      "predicted_points": 0.61,
+      "avg_last_5": 0.4,
+      "status": "Doubtful",
+      "points_horizon": 1.86,
+      "web_name": "Zubimendi",
+      "price": 5.2,
+      "selected_by_percent": 0.4,
+      "chance_of_playing": 75,
+      "news": "Hamstring injury - 75% chance of playing"
     },
     {
       "player_id": 456,
@@ -10748,7 +10748,7 @@
       "status": null,
       "points_horizon": 0.12,
       "web_name": "J.Fletcher",
-      "price": 4.9,
+      "price": 4.8,
       "selected_by_percent": 0.0,
       "chance_of_playing": null,
       "news": null
@@ -12306,6 +12306,17 @@
       "return_date": null
     },
     {
+      "player_id": 469,
+      "player_name": "Neco Williams",
+      "web_name": "N.Williams",
+      "team": "NFO",
+      "position": "DEF",
+      "status": "Doubtful",
+      "chance_of_playing": 75,
+      "news": "Ankle injury - 75% chance of playing",
+      "return_date": null
+    },
+    {
       "player_id": 418,
       "player_name": "Harry Maguire",
       "web_name": "Maguire",
@@ -12336,6 +12347,17 @@
       "status": "Injured",
       "chance_of_playing": 0,
       "news": "Hamstring injury - Unknown return date",
+      "return_date": null
+    },
+    {
+      "player_id": 586,
+      "player_name": "Nobel Mendy",
+      "web_name": "Mendy",
+      "team": "HUL",
+      "position": "DEF",
+      "status": "Doubtful",
+      "chance_of_playing": 75,
+      "news": "Knee injury - 75% chance of playing",
       "return_date": null
     },
     {
@@ -12471,6 +12493,17 @@
       "return_date": null
     },
     {
+      "player_id": 84,
+      "player_name": "Nathan Collins",
+      "web_name": "Collins",
+      "team": "BRE",
+      "position": "DEF",
+      "status": "Doubtful",
+      "chance_of_playing": 75,
+      "news": "Knee injury - 75% chance of playing",
+      "return_date": null
+    },
+    {
       "player_id": 371,
       "player_name": "Ryan Gravenberch",
       "web_name": "Gravenberch",
@@ -12545,6 +12578,17 @@
       "status": "Unavailable",
       "chance_of_playing": 0,
       "news": "not included in squad.",
+      "return_date": null
+    },
+    {
+      "player_id": 19,
+      "player_name": "Martín Zubimendi Ibáñez",
+      "web_name": "Zubimendi",
+      "team": "ARS",
+      "position": "MID",
+      "status": "Doubtful",
+      "chance_of_playing": 75,
+      "news": "Hamstring injury - 75% chance of playing",
       "return_date": null
     },
     {
@@ -12688,6 +12732,17 @@
       "status": "Injured",
       "chance_of_playing": 0,
       "news": "Hip injury - Unknown return date",
+      "return_date": null
+    },
+    {
+      "player_id": 90,
+      "player_name": "Aaron Hickey",
+      "web_name": "Hickey",
+      "team": "BRE",
+      "position": "DEF",
+      "status": "Doubtful",
+      "chance_of_playing": 75,
+      "news": "Hamstring injury - 75% chance of playing",
       "return_date": null
     },
     {
@@ -13796,7 +13851,7 @@
       "ARS",
       "MID",
       5.2,
-      "a"
+      "d"
     ],
     "20": [
       "Dowman",
@@ -14229,7 +14284,7 @@
       "Cook",
       "BOU",
       "MID",
-      5.0,
+      4.9,
       "a"
     ],
     "72": [
@@ -14349,7 +14404,7 @@
       "BRE",
       "DEF",
       5.4,
-      "a"
+      "d"
     ],
     "85": [
       "Van den Berg",
@@ -14391,7 +14446,7 @@
       "BRE",
       "DEF",
       4.5,
-      "a"
+      "d"
     ],
     "92": [
       "Ji-soo",
@@ -15370,7 +15425,7 @@
       "Mingueza",
       "CRY",
       "DEF",
-      4.3,
+      4.2,
       "a"
     ],
     "208": [
@@ -16176,7 +16231,7 @@
       "HUL",
       "DEF",
       4.1,
-      "a"
+      "d"
     ],
     "589": [
       "Gourna-Douath",
@@ -17365,7 +17420,7 @@
       "J.Fletcher",
       "MUN",
       "MID",
-      4.9,
+      4.8,
       "a"
     ],
     "435": [
@@ -17688,7 +17743,7 @@
       "NFO",
       "DEF",
       4.9,
-      "a"
+      "d"
     ],
     "470": [
       "Morato",
