@@ -8,7 +8,7 @@
     13
   ],
   "deadline_time": "2026-11-21T11:00:00Z",
-  "generated_at": "2026-11-18T15:27:30Z",
+  "generated_at": "2026-11-19T15:34:01Z",
   "data_source": "FPL API",
   "model": {
     "split": "by gameweek",
@@ -31,7 +31,7 @@
     "test_spearman": 0.714,
     "baseline_spearman": 0.678,
     "top20_avg_points": 4.69,
-    "baseline_top20_avg_points": 4.35,
+    "baseline_top20_avg_points": 4.38,
     "oracle_top20_avg_points": 10.49,
     "per_gameweek": [
       {
@@ -64,7 +64,7 @@
         "spearman": 0.7,
         "base_spearman": 0.651,
         "top": 3.8,
-        "base_top": 3.55,
+        "base_top": 3.7,
         "oracle_top": 10.65
       },
       {
@@ -94,7 +94,7 @@
     "loss": "poisson",
     "n_features": 26,
     "n_train": 93327,
-    "trained_at": "2026-11-18T15:27:27Z"
+    "trained_at": "2026-11-19T15:33:57Z"
   },
   "predictions": [
     {
@@ -141,7 +141,7 @@
       "points_horizon": 16.61,
       "web_name": "N.Jackson",
       "price": 7.1,
-      "selected_by_percent": 31.9,
+      "selected_by_percent": 32.3,
       "chance_of_playing": null,
       "news": null
     },
@@ -237,7 +237,7 @@
       "points_horizon": 14.69,
       "web_name": "Isak",
       "price": 9.3,
-      "selected_by_percent": 25.3,
+      "selected_by_percent": 25.4,
       "chance_of_playing": 100,
       "news": null
     },
@@ -285,7 +285,7 @@
       "points_horizon": 16.03,
       "web_name": "Rogers",
       "price": 8.2,
-      "selected_by_percent": 54.0,
+      "selected_by_percent": 54.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -309,7 +309,7 @@
       "points_horizon": 12.34,
       "web_name": "Tavernier",
       "price": 6.7,
-      "selected_by_percent": 31.6,
+      "selected_by_percent": 31.7,
       "chance_of_playing": null,
       "news": null
     },
@@ -333,7 +333,7 @@
       "points_horizon": 12.39,
       "web_name": "Evanilson",
       "price": 6.5,
-      "selected_by_percent": 24.2,
+      "selected_by_percent": 24.4,
       "chance_of_playing": null,
       "news": null
     },
@@ -381,7 +381,7 @@
       "points_horizon": 12.24,
       "web_name": "Van Hecke",
       "price": 5.1,
-      "selected_by_percent": 15.1,
+      "selected_by_percent": 15.5,
       "chance_of_playing": 100,
       "news": null
     },
@@ -405,7 +405,7 @@
       "points_horizon": 11.39,
       "web_name": "De Cuyper",
       "price": 5.5,
-      "selected_by_percent": 48.1,
+      "selected_by_percent": 48.3,
       "chance_of_playing": null,
       "news": null
     },
@@ -429,7 +429,7 @@
       "points_horizon": 12.8,
       "web_name": "Wirtz",
       "price": 7.2,
-      "selected_by_percent": 5.9,
+      "selected_by_percent": 6.0,
       "chance_of_playing": 100,
       "news": null
     },
@@ -597,7 +597,7 @@
       "points_horizon": 11.33,
       "web_name": "Hill",
       "price": 5.6,
-      "selected_by_percent": 3.1,
+      "selected_by_percent": 3.2,
       "chance_of_playing": null,
       "news": null
     },
@@ -765,7 +765,7 @@
       "points_horizon": 11.47,
       "web_name": "E.Le Fée",
       "price": 5.7,
-      "selected_by_percent": 2.8,
+      "selected_by_percent": 2.9,
       "chance_of_playing": null,
       "news": null
     },
@@ -866,6 +866,30 @@
       "news": null
     },
     {
+      "player_id": 45,
+      "player_name": "John McGinn",
+      "team": "AVL",
+      "position": "MID",
+      "opponent": "SUN",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "SUN",
+          "is_home": "HOME",
+          "predicted_points": 3.94
+        }
+      ],
+      "predicted_points": 3.94,
+      "avg_last_5": 5.4,
+      "status": null,
+      "points_horizon": 11.35,
+      "web_name": "McGinn",
+      "price": 5.5,
+      "selected_by_percent": 4.0,
+      "chance_of_playing": null,
+      "news": null
+    },
+    {
       "player_id": 138,
       "player_name": "Charalampos Kostoulas",
       "team": "BHA",
@@ -909,31 +933,7 @@
       "points_horizon": 11.78,
       "web_name": "Araujo",
       "price": 5.5,
-      "selected_by_percent": 4.5,
-      "chance_of_playing": null,
-      "news": null
-    },
-    {
-      "player_id": 45,
-      "player_name": "John McGinn",
-      "team": "AVL",
-      "position": "MID",
-      "opponent": "SUN",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "SUN",
-          "is_home": "HOME",
-          "predicted_points": 3.89
-        }
-      ],
-      "predicted_points": 3.89,
-      "avg_last_5": 5.4,
-      "status": null,
-      "points_horizon": 11.24,
-      "web_name": "McGinn",
-      "price": 5.4,
-      "selected_by_percent": 3.8,
+      "selected_by_percent": 4.6,
       "chance_of_playing": null,
       "news": null
     },
@@ -957,7 +957,7 @@
       "points_horizon": 11.31,
       "web_name": "Groß",
       "price": 6.3,
-      "selected_by_percent": 48.3,
+      "selected_by_percent": 48.4,
       "chance_of_playing": null,
       "news": null
     },
@@ -981,7 +981,7 @@
       "points_horizon": 10.06,
       "web_name": "Konsa",
       "price": 4.9,
-      "selected_by_percent": 24.9,
+      "selected_by_percent": 25.0,
       "chance_of_playing": 100,
       "news": null
     },
@@ -1103,6 +1103,30 @@
       "price": 7.5,
       "selected_by_percent": 13.7,
       "chance_of_playing": 100,
+      "news": null
+    },
+    {
+      "player_id": 127,
+      "player_name": "Diego Gómez Amarilla",
+      "team": "BHA",
+      "position": "MID",
+      "opponent": "HUL",
+      "is_home": "AWAY",
+      "fixtures": [
+        {
+          "opponent": "HUL",
+          "is_home": "AWAY",
+          "predicted_points": 3.72
+        }
+      ],
+      "predicted_points": 3.72,
+      "avg_last_5": 5.4,
+      "status": null,
+      "points_horizon": 9.85,
+      "web_name": "Gomez",
+      "price": 5.1,
+      "selected_by_percent": 4.4,
+      "chance_of_playing": null,
       "news": null
     },
     {
@@ -1274,30 +1298,6 @@
       "news": null
     },
     {
-      "player_id": 127,
-      "player_name": "Diego Gómez Amarilla",
-      "team": "BHA",
-      "position": "MID",
-      "opponent": "HUL",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "HUL",
-          "is_home": "AWAY",
-          "predicted_points": 3.57
-        }
-      ],
-      "predicted_points": 3.57,
-      "avg_last_5": 5.4,
-      "status": null,
-      "points_horizon": 9.56,
-      "web_name": "Gomez",
-      "price": 5.0,
-      "selected_by_percent": 4.3,
-      "chance_of_playing": null,
-      "news": null
-    },
-    {
       "player_id": 156,
       "player_name": "Pedro Lomba Neto",
       "team": "CHE",
@@ -1317,7 +1317,7 @@
       "points_horizon": 11.63,
       "web_name": "Neto",
       "price": 6.6,
-      "selected_by_percent": 5.0,
+      "selected_by_percent": 4.9,
       "chance_of_playing": null,
       "news": null
     },
@@ -1341,7 +1341,7 @@
       "points_horizon": 9.69,
       "web_name": "Vuskovic",
       "price": 5.3,
-      "selected_by_percent": 9.8,
+      "selected_by_percent": 10.0,
       "chance_of_playing": null,
       "news": null
     },
@@ -1389,7 +1389,7 @@
       "points_horizon": 9.87,
       "web_name": "Verbruggen",
       "price": 4.7,
-      "selected_by_percent": 24.0,
+      "selected_by_percent": 24.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -1629,7 +1629,7 @@
       "points_horizon": 10.8,
       "web_name": "Barnes",
       "price": 6.0,
-      "selected_by_percent": 6.5,
+      "selected_by_percent": 6.4,
       "chance_of_playing": null,
       "news": null
     },
@@ -1653,7 +1653,7 @@
       "points_horizon": 12.2,
       "web_name": "Mbeumo",
       "price": 7.9,
-      "selected_by_percent": 18.9,
+      "selected_by_percent": 18.8,
       "chance_of_playing": null,
       "news": null
     },
@@ -1701,7 +1701,7 @@
       "points_horizon": 10.36,
       "web_name": "Barry",
       "price": 5.7,
-      "selected_by_percent": 10.9,
+      "selected_by_percent": 11.0,
       "chance_of_playing": null,
       "news": null
     },
@@ -1917,7 +1917,7 @@
       "points_horizon": 10.93,
       "web_name": "Calvert-Lewin",
       "price": 6.0,
-      "selected_by_percent": 17.3,
+      "selected_by_percent": 17.2,
       "chance_of_playing": 100,
       "news": null
     },
@@ -2042,6 +2042,30 @@
       "news": null
     },
     {
+      "player_id": 597,
+      "player_name": "Zion Suzuki",
+      "team": "AVL",
+      "position": "GKP",
+      "opponent": "SUN",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "SUN",
+          "is_home": "HOME",
+          "predicted_points": 3.15
+        }
+      ],
+      "predicted_points": 3.15,
+      "avg_last_5": 3.0,
+      "status": null,
+      "points_horizon": 9.2,
+      "web_name": "Suzuki",
+      "price": 5.1,
+      "selected_by_percent": 3.2,
+      "chance_of_playing": null,
+      "news": null
+    },
+    {
       "player_id": 295,
       "player_name": "Oli McBurnie",
       "team": "HUL",
@@ -2062,30 +2086,6 @@
       "web_name": "McBurnie",
       "price": 5.5,
       "selected_by_percent": 1.7,
-      "chance_of_playing": null,
-      "news": null
-    },
-    {
-      "player_id": 597,
-      "player_name": "Zion Suzuki",
-      "team": "AVL",
-      "position": "GKP",
-      "opponent": "SUN",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "SUN",
-          "is_home": "HOME",
-          "predicted_points": 3.1
-        }
-      ],
-      "predicted_points": 3.1,
-      "avg_last_5": 3.0,
-      "status": null,
-      "points_horizon": 9.06,
-      "web_name": "Suzuki",
-      "price": 5.0,
-      "selected_by_percent": 3.2,
       "chance_of_playing": null,
       "news": null
     },
@@ -2229,7 +2229,7 @@
       "points_horizon": 9.73,
       "web_name": "Hall",
       "price": 5.2,
-      "selected_by_percent": 18.1,
+      "selected_by_percent": 18.0,
       "chance_of_playing": null,
       "news": null
     },
@@ -2517,7 +2517,7 @@
       "points_horizon": 9.44,
       "web_name": "Bogle",
       "price": 4.8,
-      "selected_by_percent": 11.2,
+      "selected_by_percent": 11.3,
       "chance_of_playing": null,
       "news": null
     },
@@ -2805,7 +2805,7 @@
       "points_horizon": 6.75,
       "web_name": "Gvardiol",
       "price": 5.6,
-      "selected_by_percent": 22.1,
+      "selected_by_percent": 21.8,
       "chance_of_playing": 75,
       "news": "Unspecified injury - 75% chance of playing"
     },
@@ -2853,7 +2853,7 @@
       "points_horizon": 7.95,
       "web_name": "Manzambi",
       "price": 6.2,
-      "selected_by_percent": 8.5,
+      "selected_by_percent": 8.4,
       "chance_of_playing": 75,
       "news": "Calf injury - 75% chance of playing"
     },
@@ -2925,7 +2925,7 @@
       "points_horizon": 8.89,
       "web_name": "Trafford",
       "price": 5.0,
-      "selected_by_percent": 6.5,
+      "selected_by_percent": 6.6,
       "chance_of_playing": null,
       "news": null
     },
@@ -3240,30 +3240,6 @@
       "selected_by_percent": 0.2,
       "chance_of_playing": null,
       "news": null
-    },
-    {
-      "player_id": 552,
-      "player_name": "Brian Brobbey",
-      "team": "SUN",
-      "position": "FWD",
-      "opponent": "AVL",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "AVL",
-          "is_home": "AWAY",
-          "predicted_points": 2.59
-        }
-      ],
-      "predicted_points": 2.59,
-      "avg_last_5": 1.6,
-      "status": "Doubtful",
-      "points_horizon": 7.18,
-      "web_name": "Brobbey",
-      "price": 5.7,
-      "selected_by_percent": 4.6,
-      "chance_of_playing": 75,
-      "news": "Muscular injury - 75% chance of playing"
     },
     {
       "player_id": 549,
@@ -3765,7 +3741,7 @@
       "points_horizon": 5.67,
       "web_name": "Guéhi",
       "price": 6.0,
-      "selected_by_percent": 13.8,
+      "selected_by_percent": 13.6,
       "chance_of_playing": 75,
       "news": "Unspecified injury - 75% chance of playing"
     },
@@ -4173,7 +4149,7 @@
       "points_horizon": 6.67,
       "web_name": "Alysson",
       "price": 4.9,
-      "selected_by_percent": 0.2,
+      "selected_by_percent": 0.3,
       "chance_of_playing": 100,
       "news": null
     },
@@ -4245,7 +4221,7 @@
       "points_horizon": 7.92,
       "web_name": "Leno",
       "price": 4.5,
-      "selected_by_percent": 4.4,
+      "selected_by_percent": 4.3,
       "chance_of_playing": null,
       "news": null
     },
@@ -4269,7 +4245,7 @@
       "points_horizon": 6.52,
       "web_name": "O'Nien",
       "price": 3.9,
-      "selected_by_percent": 2.4,
+      "selected_by_percent": 2.5,
       "chance_of_playing": null,
       "news": null
     },
@@ -4317,7 +4293,7 @@
       "points_horizon": 6.67,
       "web_name": "Wissa",
       "price": 5.9,
-      "selected_by_percent": 8.2,
+      "selected_by_percent": 8.1,
       "chance_of_playing": null,
       "news": null
     },
@@ -4365,7 +4341,7 @@
       "points_horizon": 7.64,
       "web_name": "Iroegbunam",
       "price": 5.0,
-      "selected_by_percent": 0.0,
+      "selected_by_percent": 0.1,
       "chance_of_playing": 100,
       "news": null
     },
@@ -4580,8 +4556,8 @@
       "status": null,
       "points_horizon": 7.22,
       "web_name": "Gonzalo",
-      "price": 5.9,
-      "selected_by_percent": 3.6,
+      "price": 5.8,
+      "selected_by_percent": 3.5,
       "chance_of_playing": null,
       "news": null
     },
@@ -5493,7 +5469,7 @@
       "points_horizon": 5.9,
       "web_name": "Davis",
       "price": 4.0,
-      "selected_by_percent": 6.6,
+      "selected_by_percent": 6.5,
       "chance_of_playing": null,
       "news": null
     },
@@ -5565,7 +5541,7 @@
       "points_horizon": 7.18,
       "web_name": "N.Williams",
       "price": 4.9,
-      "selected_by_percent": 5.3,
+      "selected_by_percent": 5.2,
       "chance_of_playing": 75,
       "news": "Ankle injury - 75% chance of playing"
     },
@@ -5930,6 +5906,30 @@
       "news": null
     },
     {
+      "player_id": 331,
+      "player_name": "Gabriel Gudmundsson",
+      "team": "LEE",
+      "position": "DEF",
+      "opponent": "CHE",
+      "is_home": "AWAY",
+      "fixtures": [
+        {
+          "opponent": "CHE",
+          "is_home": "AWAY",
+          "predicted_points": 1.66
+        }
+      ],
+      "predicted_points": 1.66,
+      "avg_last_5": 2.8,
+      "status": null,
+      "points_horizon": 5.52,
+      "web_name": "Gudmundsson",
+      "price": 4.5,
+      "selected_by_percent": 0.1,
+      "chance_of_playing": 100,
+      "news": null
+    },
+    {
       "player_id": 54,
       "player_name": "Joao Gomes",
       "team": "AVL",
@@ -6018,9 +6018,9 @@
       "predicted_points": 1.64,
       "avg_last_5": 1.6,
       "status": null,
-      "points_horizon": 4.46,
+      "points_horizon": 4.42,
       "web_name": "Georginio",
-      "price": 5.3,
+      "price": 5.2,
       "selected_by_percent": 0.4,
       "chance_of_playing": 100,
       "news": null
@@ -6770,30 +6770,6 @@
       "news": null
     },
     {
-      "player_id": 331,
-      "player_name": "Gabriel Gudmundsson",
-      "team": "LEE",
-      "position": "DEF",
-      "opponent": "CHE",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "CHE",
-          "is_home": "AWAY",
-          "predicted_points": 1.25
-        }
-      ],
-      "predicted_points": 1.25,
-      "avg_last_5": 2.8,
-      "status": "Doubtful",
-      "points_horizon": 4.14,
-      "web_name": "Gudmundsson",
-      "price": 4.5,
-      "selected_by_percent": 0.1,
-      "chance_of_playing": 75,
-      "news": "Hamstring injury - 75% chance of playing"
-    },
-    {
       "player_id": 62,
       "player_name": "Bafodé Diakité",
       "team": "BOU",
@@ -6962,30 +6938,6 @@
       "news": null
     },
     {
-      "player_id": 544,
-      "player_name": "Granit Xhaka",
-      "team": "SUN",
-      "position": "MID",
-      "opponent": "AVL",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "AVL",
-          "is_home": "AWAY",
-          "predicted_points": 1.15
-        }
-      ],
-      "predicted_points": 1.15,
-      "avg_last_5": 2.4,
-      "status": "Doubtful",
-      "points_horizon": 3.47,
-      "web_name": "Xhaka",
-      "price": 5.3,
-      "selected_by_percent": 2.5,
-      "chance_of_playing": 75,
-      "news": "Calf injury - 75% chance of playing"
-    },
-    {
       "player_id": 638,
       "player_name": "Brooke Norton-Cuffy",
       "team": "HUL",
@@ -7101,7 +7053,7 @@
       "points_horizon": 3.31,
       "web_name": "Buendía",
       "price": 5.9,
-      "selected_by_percent": 1.1,
+      "selected_by_percent": 1.0,
       "chance_of_playing": null,
       "news": null
     },
@@ -7149,7 +7101,7 @@
       "points_horizon": 3.73,
       "web_name": "Belloumi",
       "price": 5.3,
-      "selected_by_percent": 9.4,
+      "selected_by_percent": 9.3,
       "chance_of_playing": 75,
       "news": "Hamstring injury - 75% chance of playing"
     },
@@ -7269,9 +7221,33 @@
       "points_horizon": 3.54,
       "web_name": "Maguire",
       "price": 4.6,
-      "selected_by_percent": 5.0,
+      "selected_by_percent": 4.9,
       "chance_of_playing": 75,
       "news": "Back injury - 75% chance of playing"
+    },
+    {
+      "player_id": 335,
+      "player_name": "Anton Stach",
+      "team": "LEE",
+      "position": "MID",
+      "opponent": "CHE",
+      "is_home": "AWAY",
+      "fixtures": [
+        {
+          "opponent": "CHE",
+          "is_home": "AWAY",
+          "predicted_points": 1.03
+        }
+      ],
+      "predicted_points": 1.03,
+      "avg_last_5": 1.2,
+      "status": null,
+      "points_horizon": 3.02,
+      "web_name": "Stach",
+      "price": 6.0,
+      "selected_by_percent": 1.6,
+      "chance_of_playing": 100,
+      "news": null
     },
     {
       "player_id": 616,
@@ -8090,30 +8066,6 @@
       "news": null
     },
     {
-      "player_id": 482,
-      "player_name": "Callum Hudson-Odoi",
-      "team": "NFO",
-      "position": "MID",
-      "opponent": "BOU",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "BOU",
-          "is_home": "AWAY",
-          "predicted_points": 0.63
-        }
-      ],
-      "predicted_points": 0.63,
-      "avg_last_5": 0.6,
-      "status": null,
-      "points_horizon": 2.01,
-      "web_name": "Hudson-Odoi",
-      "price": 5.7,
-      "selected_by_percent": 0.1,
-      "chance_of_playing": 100,
-      "news": null
-    },
-    {
       "player_id": 343,
       "player_name": "Daniel James",
       "team": "LEE",
@@ -8594,30 +8546,6 @@
       "news": "Unspecified injury - 75% chance of playing"
     },
     {
-      "player_id": 335,
-      "player_name": "Anton Stach",
-      "team": "LEE",
-      "position": "MID",
-      "opponent": "CHE",
-      "is_home": "AWAY",
-      "fixtures": [
-        {
-          "opponent": "CHE",
-          "is_home": "AWAY",
-          "predicted_points": 0.51
-        }
-      ],
-      "predicted_points": 0.51,
-      "avg_last_5": 1.2,
-      "status": "Doubtful",
-      "points_horizon": 1.5,
-      "web_name": "Stach",
-      "price": 6.0,
-      "selected_by_percent": 1.6,
-      "chance_of_playing": 50,
-      "news": "Foot injury - 50% chance of playing"
-    },
-    {
       "player_id": 344,
       "player_name": "Ilia Gruev",
       "team": "LEE",
@@ -8712,6 +8640,30 @@
       "selected_by_percent": 0.0,
       "chance_of_playing": 100,
       "news": null
+    },
+    {
+      "player_id": 173,
+      "player_name": "Bobby Thomas",
+      "team": "COV",
+      "position": "DEF",
+      "opponent": "CRY",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "CRY",
+          "is_home": "HOME",
+          "predicted_points": 0.47
+        }
+      ],
+      "predicted_points": 0.47,
+      "avg_last_5": 1.6,
+      "status": "Doubtful",
+      "points_horizon": 1.28,
+      "web_name": "Thomas",
+      "price": 4.0,
+      "selected_by_percent": 7.2,
+      "chance_of_playing": 75,
+      "news": "Calf injury - 75% chance of playing"
     },
     {
       "player_id": 104,
@@ -9096,30 +9048,6 @@
       "selected_by_percent": 0.0,
       "chance_of_playing": null,
       "news": null
-    },
-    {
-      "player_id": 173,
-      "player_name": "Bobby Thomas",
-      "team": "COV",
-      "position": "DEF",
-      "opponent": "CRY",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "CRY",
-          "is_home": "HOME",
-          "predicted_points": 0.31
-        }
-      ],
-      "predicted_points": 0.31,
-      "avg_last_5": 1.6,
-      "status": "Doubtful",
-      "points_horizon": 0.85,
-      "web_name": "Thomas",
-      "price": 4.0,
-      "selected_by_percent": 7.2,
-      "chance_of_playing": 50,
-      "news": "Calf injury - 50% chance of playing"
     },
     {
       "player_id": 633,
@@ -10994,6 +10922,30 @@
       "news": null
     },
     {
+      "player_id": 378,
+      "player_name": "James McConnell",
+      "team": "LIV",
+      "position": "MID",
+      "opponent": "MUN",
+      "is_home": "HOME",
+      "fixtures": [
+        {
+          "opponent": "MUN",
+          "is_home": "HOME",
+          "predicted_points": 0.03
+        }
+      ],
+      "predicted_points": 0.03,
+      "avg_last_5": 0.0,
+      "status": null,
+      "points_horizon": 0.09,
+      "web_name": "McConnell",
+      "price": 4.3,
+      "selected_by_percent": 0.2,
+      "chance_of_playing": null,
+      "news": null
+    },
+    {
       "player_id": 663,
       "player_name": "Miodrag Pivas",
       "team": "NEW",
@@ -11278,30 +11230,6 @@
       "web_name": "Salia",
       "price": 4.5,
       "selected_by_percent": 0.3,
-      "chance_of_playing": null,
-      "news": null
-    },
-    {
-      "player_id": 378,
-      "player_name": "James McConnell",
-      "team": "LIV",
-      "position": "MID",
-      "opponent": "MUN",
-      "is_home": "HOME",
-      "fixtures": [
-        {
-          "opponent": "MUN",
-          "is_home": "HOME",
-          "predicted_points": 0.02
-        }
-      ],
-      "predicted_points": 0.02,
-      "avg_last_5": 0.0,
-      "status": null,
-      "points_horizon": 0.06,
-      "web_name": "McConnell",
-      "price": 4.4,
-      "selected_by_percent": 0.2,
       "chance_of_playing": null,
       "news": null
     },
@@ -12279,8 +12207,8 @@
       "team": "COV",
       "position": "DEF",
       "status": "Doubtful",
-      "chance_of_playing": 50,
-      "news": "Calf injury - 50% chance of playing",
+      "chance_of_playing": 75,
+      "news": "Calf injury - 75% chance of playing",
       "return_date": null
     },
     {
@@ -12333,9 +12261,9 @@
       "web_name": "Brobbey",
       "team": "SUN",
       "position": "FWD",
-      "status": "Doubtful",
-      "chance_of_playing": 75,
-      "news": "Muscular injury - 75% chance of playing",
+      "status": "Injured",
+      "chance_of_playing": 0,
+      "news": "Muscular injury - Unknown return date",
       "return_date": null
     },
     {
@@ -12410,20 +12338,9 @@
       "web_name": "Xhaka",
       "team": "SUN",
       "position": "MID",
-      "status": "Doubtful",
-      "chance_of_playing": 75,
-      "news": "Calf injury - 75% chance of playing",
-      "return_date": null
-    },
-    {
-      "player_id": 335,
-      "player_name": "Anton Stach",
-      "web_name": "Stach",
-      "team": "LEE",
-      "position": "MID",
-      "status": "Doubtful",
-      "chance_of_playing": 50,
-      "news": "Foot injury - 50% chance of playing",
+      "status": "Injured",
+      "chance_of_playing": 0,
+      "news": "Calf injury - Unknown return date",
       "return_date": null
     },
     {
@@ -12790,14 +12707,14 @@
       "return_date": null
     },
     {
-      "player_id": 331,
-      "player_name": "Gabriel Gudmundsson",
-      "web_name": "Gudmundsson",
-      "team": "LEE",
-      "position": "DEF",
-      "status": "Doubtful",
-      "chance_of_playing": 75,
-      "news": "Hamstring injury - 75% chance of playing",
+      "player_id": 482,
+      "player_name": "Callum Hudson-Odoi",
+      "web_name": "Hudson-Odoi",
+      "team": "NFO",
+      "position": "MID",
+      "status": "Injured",
+      "chance_of_playing": 0,
+      "news": "Unspecified injury - Unknown return date",
       "return_date": null
     },
     {
@@ -14011,7 +13928,7 @@
       "McGinn",
       "AVL",
       "MID",
-      5.4,
+      5.5,
       "a"
     ],
     "46": [
@@ -14123,7 +14040,7 @@
       "Suzuki",
       "AVL",
       "GKP",
-      5.0,
+      5.1,
       "a"
     ],
     "606": [
@@ -14690,7 +14607,7 @@
       "Georginio",
       "BHA",
       "FWD",
-      5.3,
+      5.2,
       "a"
     ],
     "126": [
@@ -14704,7 +14621,7 @@
       "Gomez",
       "BHA",
       "MID",
-      5.0,
+      5.1,
       "a"
     ],
     "128": [
@@ -15929,7 +15846,7 @@
       "Gonzalo",
       "FUL",
       "FWD",
-      5.9,
+      5.8,
       "a"
     ],
     "570": [
@@ -16574,7 +16491,7 @@
       "LEE",
       "DEF",
       4.5,
-      "d"
+      "a"
     ],
     "332": [
       "Justin",
@@ -16602,7 +16519,7 @@
       "LEE",
       "MID",
       6.0,
-      "d"
+      "a"
     ],
     "336": [
       "Okafor",
@@ -16951,7 +16868,7 @@
       "McConnell",
       "LIV",
       "MID",
-      4.4,
+      4.3,
       "a"
     ],
     "379": [
@@ -17827,7 +17744,7 @@
       "NFO",
       "MID",
       5.7,
-      "a"
+      "i"
     ],
     "483": [
       "Ndoye",
@@ -18324,7 +18241,7 @@
       "SUN",
       "MID",
       5.3,
-      "d"
+      "i"
     ],
     "545": [
       "Sadiki",
@@ -18380,7 +18297,7 @@
       "SUN",
       "FWD",
       5.7,
-      "d"
+      "i"
     ],
     "553": [
       "Isidor",

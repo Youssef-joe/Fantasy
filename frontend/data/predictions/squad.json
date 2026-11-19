@@ -2,7 +2,7 @@
   "season": "2026-27",
   "gameweek": 11,
   "budget": 100.0,
-  "generated_at": "2026-11-18T15:27:30Z",
+  "generated_at": "2026-11-19T15:34:01Z",
   "horizons": [
     {
       "squad": [
@@ -18,8 +18,8 @@
         115,
         496,
         114,
-        57,
         127,
+        57,
         176
       ],
       "starting": [
@@ -44,9 +44,9 @@
       "captain": 411,
       "vice_captain": 166,
       "formation": "3-4-3",
-      "cost": 99.7,
+      "cost": 99.8,
       "points": 62.25,
-      "bench_points": 14.3,
+      "bench_points": 14.45,
       "key": "gw",
       "label": "GW11",
       "gameweeks": [
@@ -149,6 +149,14 @@
           "points": 4.03,
           "points_this_gw": 4.03
         },
+        "127": {
+          "web_name": "Gomez",
+          "team": "BHA",
+          "position": "MID",
+          "price": 5.1,
+          "points": 3.72,
+          "points_this_gw": 3.72
+        },
         "57": {
           "web_name": "Petrović",
           "team": "BOU",
@@ -156,14 +164,6 @@
           "price": 4.5,
           "points": 3.62,
           "points_this_gw": 3.62
-        },
-        "127": {
-          "web_name": "Gomez",
-          "team": "BHA",
-          "position": "MID",
-          "price": 5.0,
-          "points": 3.57,
-          "points_this_gw": 3.57
         },
         "176": {
           "web_name": "Dasilva",
