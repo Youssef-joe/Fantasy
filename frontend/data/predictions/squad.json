@@ -2,7 +2,7 @@
   "season": "2026-27",
   "gameweek": 11,
   "budget": 100.0,
-  "generated_at": "2026-11-19T15:34:01Z",
+  "generated_at": "2026-11-20T15:13:04Z",
   "horizons": [
     {
       "squad": [
@@ -44,7 +44,7 @@
       "captain": 411,
       "vice_captain": 166,
       "formation": "3-4-3",
-      "cost": 99.8,
+      "cost": 99.9,
       "points": 62.25,
       "bench_points": 14.45,
       "key": "gw",
@@ -65,7 +65,7 @@
           "web_name": "N.Jackson",
           "team": "AVL",
           "position": "FWD",
-          "price": 7.1,
+          "price": 7.2,
           "points": 6.19,
           "points_this_gw": 6.19
         },
@@ -191,7 +191,7 @@
         57,
         176,
         290,
-        279
+        277
       ],
       "starting": [
         350,
@@ -209,7 +209,7 @@
       "bench": [
         57,
         176,
-        279,
+        277,
         290
       ],
       "captain": 154,
@@ -217,7 +217,7 @@
       "formation": "3-4-3",
       "cost": 100.0,
       "points": 176.78,
-      "bench_points": 35.99,
+      "bench_points": 35.81,
       "key": "multi",
       "label": "GW11–13",
       "gameweeks": [
@@ -238,7 +238,7 @@
           "web_name": "N.Jackson",
           "team": "AVL",
           "position": "FWD",
-          "price": 7.1,
+          "price": 7.2,
           "points": 16.61,
           "points_this_gw": 6.19
         },
@@ -338,13 +338,13 @@
           "points": 8.11,
           "points_this_gw": 2.32
         },
-        "279": {
-          "web_name": "Ajayi",
+        "277": {
+          "web_name": "Egan",
           "team": "HUL",
           "position": "DEF",
-          "price": 4.2,
-          "points": 8.88,
-          "points_this_gw": 2.3
+          "price": 4.1,
+          "points": 8.7,
+          "points_this_gw": 2.31
         }
       }
     }
