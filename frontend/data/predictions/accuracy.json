@@ -1,6 +1,6 @@
 {
   "season": "2026-27",
-  "updated_at": "2026-11-21T14:28:58Z",
+  "updated_at": "2026-11-22T14:24:56Z",
   "top_n": 20,
   "live": [],
   "live_summary": null,
@@ -43,20 +43,20 @@
     },
     {
       "gameweek": 11,
-      "n": 672,
-      "mae": 1.252,
-      "baseline_mae": 1.304,
-      "top20_avg_points": 0.85,
-      "baseline_top20_avg_points": 0.1,
-      "oracle_top20_avg_points": 3.25
+      "n": 674,
+      "mae": 1.139,
+      "baseline_mae": 1.195,
+      "top20_avg_points": 3.45,
+      "baseline_top20_avg_points": 2.45,
+      "oracle_top20_avg_points": 9.9
     }
   ],
   "backtest_summary": {
     "gameweeks": 5,
-    "top20_avg_points": 4.16,
-    "baseline_top20_avg_points": 3.52,
-    "oracle_top20_avg_points": 9.01,
-    "mae": 1.12,
-    "baseline_mae": 1.209
+    "top20_avg_points": 4.68,
+    "baseline_top20_avg_points": 3.99,
+    "oracle_top20_avg_points": 10.34,
+    "mae": 1.097,
+    "baseline_mae": 1.187
   }
 }

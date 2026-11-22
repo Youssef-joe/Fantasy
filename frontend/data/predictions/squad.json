@@ -2,222 +2,222 @@
   "season": "2026-27",
   "gameweek": 12,
   "budget": 100.0,
-  "generated_at": "2026-11-21T14:28:57Z",
+  "generated_at": "2026-11-22T14:24:55Z",
   "horizons": [
     {
       "squad": [
-        411,
-        261,
-        264,
-        330,
-        250,
-        334,
-        400,
-        156,
-        60,
         154,
+        40,
+        166,
         346,
-        384,
-        79,
-        356,
-        362
+        411,
+        68,
+        67,
+        4,
+        204,
+        330,
+        385,
+        496,
+        183,
+        534,
+        656
       ],
       "starting": [
-        250,
+        385,
+        4,
+        204,
         330,
-        334,
-        60,
-        261,
-        264,
-        400,
-        156,
         154,
-        411,
-        346
+        40,
+        68,
+        67,
+        166,
+        346,
+        411
       ],
       "bench": [
-        384,
-        79,
-        356,
-        362
+        496,
+        183,
+        534,
+        656
       ],
-      "captain": 411,
-      "vice_captain": 261,
-      "formation": "3-5-2",
+      "captain": 154,
+      "vice_captain": 40,
+      "formation": "3-4-3",
       "cost": 100.0,
-      "points": 41.75,
-      "bench_points": 10.48,
+      "points": 53.47,
+      "bench_points": 13.18,
       "key": "gw",
       "label": "GW12",
       "gameweeks": [
         12
       ],
       "players": {
-        "411": {
-          "web_name": "Haaland",
-          "team": "MCI",
-          "position": "FWD",
-          "price": 15.8,
-          "points": 4.59,
-          "points_this_gw": 4.59
-        },
-        "261": {
-          "web_name": "Iwobi",
-          "team": "FUL",
-          "position": "MID",
-          "price": 5.4,
-          "points": 3.93,
-          "points_this_gw": 3.93
-        },
-        "264": {
-          "web_name": "Bobb",
-          "team": "FUL",
-          "position": "MID",
-          "price": 5.5,
-          "points": 3.66,
-          "points_this_gw": 3.66
-        },
-        "330": {
-          "web_name": "Bogle",
-          "team": "LEE",
-          "position": "DEF",
-          "price": 4.8,
-          "points": 3.37,
-          "points_this_gw": 3.37
-        },
-        "250": {
-          "web_name": "Leno",
-          "team": "FUL",
-          "position": "GKP",
-          "price": 4.5,
-          "points": 3.35,
-          "points_this_gw": 3.35
-        },
-        "334": {
-          "web_name": "Muharemović",
-          "team": "LEE",
-          "position": "DEF",
-          "price": 5.1,
-          "points": 3.27,
-          "points_this_gw": 3.27
-        },
-        "400": {
-          "web_name": "Doku",
-          "team": "MCI",
-          "position": "MID",
-          "price": 7.5,
-          "points": 3.23,
-          "points_this_gw": 3.23
-        },
-        "156": {
-          "web_name": "Neto",
-          "team": "CHE",
-          "position": "MID",
-          "price": 6.6,
-          "points": 3.05,
-          "points_this_gw": 3.05
-        },
-        "60": {
-          "web_name": "Hill",
-          "team": "BOU",
-          "position": "DEF",
-          "price": 5.6,
-          "points": 2.95,
-          "points_this_gw": 2.95
-        },
         "154": {
           "web_name": "Palmer",
           "team": "CHE",
           "position": "MID",
           "price": 9.8,
-          "points": 2.93,
-          "points_this_gw": 2.93
+          "points": 5.56,
+          "points_this_gw": 5.56
+        },
+        "40": {
+          "web_name": "Rogers",
+          "team": "CHE",
+          "position": "MID",
+          "price": 8.3,
+          "points": 4.9,
+          "points_this_gw": 4.9
+        },
+        "166": {
+          "web_name": "N.Jackson",
+          "team": "AVL",
+          "position": "FWD",
+          "price": 7.2,
+          "points": 4.8,
+          "points_this_gw": 4.8
         },
         "346": {
           "web_name": "Calvert-Lewin",
           "team": "LEE",
           "position": "FWD",
           "price": 6.0,
-          "points": 2.83,
-          "points_this_gw": 2.83
+          "points": 4.4,
+          "points_this_gw": 4.4
         },
-        "384": {
-          "web_name": "Donnarumma",
+        "411": {
+          "web_name": "Haaland",
           "team": "MCI",
-          "position": "GKP",
-          "price": 5.4,
-          "points": 2.74,
-          "points_this_gw": 2.74
-        },
-        "79": {
-          "web_name": "Evanilson",
-          "team": "BOU",
           "position": "FWD",
-          "price": 6.5,
-          "points": 2.64,
-          "points_this_gw": 2.64
+          "price": 15.8,
+          "points": 4.38,
+          "points_this_gw": 4.38
         },
-        "356": {
-          "web_name": "Virgil",
-          "team": "LIV",
-          "position": "DEF",
-          "price": 6.4,
-          "points": 2.59,
-          "points_this_gw": 2.59
+        "68": {
+          "web_name": "Tavernier",
+          "team": "BOU",
+          "position": "MID",
+          "price": 6.7,
+          "points": 4.22,
+          "points_this_gw": 4.22
         },
-        "362": {
-          "web_name": "Jacquet",
-          "team": "LIV",
+        "67": {
+          "web_name": "Rayan",
+          "team": "BOU",
+          "position": "MID",
+          "price": 6.3,
+          "points": 4.11,
+          "points_this_gw": 4.11
+        },
+        "4": {
+          "web_name": "Gabriel",
+          "team": "ARS",
           "position": "DEF",
+          "price": 8.1,
+          "points": 4.01,
+          "points_this_gw": 4.01
+        },
+        "204": {
+          "web_name": "Mitchell",
+          "team": "CRY",
+          "position": "DEF",
+          "price": 4.4,
+          "points": 4.0,
+          "points_this_gw": 4.0
+        },
+        "330": {
+          "web_name": "Bogle",
+          "team": "LEE",
+          "position": "DEF",
+          "price": 4.8,
+          "points": 3.79,
+          "points_this_gw": 3.79
+        },
+        "385": {
+          "web_name": "Trafford",
+          "team": "LEE",
+          "position": "GKP",
           "price": 5.1,
-          "points": 2.51,
-          "points_this_gw": 2.51
+          "points": 3.74,
+          "points_this_gw": 3.74
+        },
+        "496": {
+          "web_name": "Kinsky",
+          "team": "TOT",
+          "position": "GKP",
+          "price": 4.4,
+          "points": 3.56,
+          "points_this_gw": 3.56
+        },
+        "183": {
+          "web_name": "Rudoni",
+          "team": "COV",
+          "position": "MID",
+          "price": 4.9,
+          "points": 3.49,
+          "points_this_gw": 3.49
+        },
+        "534": {
+          "web_name": "Hume",
+          "team": "SUN",
+          "position": "DEF",
+          "price": 4.2,
+          "points": 3.14,
+          "points_this_gw": 3.14
+        },
+        "656": {
+          "web_name": "Mfuni",
+          "team": "COV",
+          "position": "DEF",
+          "price": 4.0,
+          "points": 2.99,
+          "points_this_gw": 2.99
         }
       }
     },
     {
       "squad": [
+        154,
+        40,
+        166,
+        346,
         411,
-        261,
-        650,
-        330,
-        250,
-        400,
-        60,
-        13,
-        79,
-        481,
-        15,
-        249,
+        68,
         4,
-        385,
-        229
+        597,
+        60,
+        61,
+        496,
+        183,
+        656,
+        539,
+        185
       ],
       "starting": [
-        250,
-        650,
+        597,
         4,
         60,
-        261,
-        400,
-        13,
-        481,
-        15,
+        61,
+        154,
+        40,
+        68,
+        183,
         411,
-        79
+        166,
+        346
       ],
       "bench": [
-        385,
-        249,
-        229,
-        330
+        496,
+        656,
+        185,
+        539
       ],
-      "captain": 411,
-      "vice_captain": 261,
-      "formation": "3-5-2",
+      "captain": 154,
+      "vice_captain": 411,
+      "formation": "3-4-3",
       "cost": 100.0,
-      "points": 127.4,
-      "bench_points": 29.05,
+      "points": 155.36,
+      "bench_points": 35.56,
       "key": "multi",
       "label": "GW12–14",
       "gameweeks": [
@@ -226,125 +226,125 @@
         14
       ],
       "players": {
+        "154": {
+          "web_name": "Palmer",
+          "team": "CHE",
+          "position": "MID",
+          "price": 9.8,
+          "points": 15.43,
+          "points_this_gw": 5.56
+        },
+        "40": {
+          "web_name": "Rogers",
+          "team": "CHE",
+          "position": "MID",
+          "price": 8.3,
+          "points": 13.88,
+          "points_this_gw": 4.9
+        },
+        "166": {
+          "web_name": "N.Jackson",
+          "team": "AVL",
+          "position": "FWD",
+          "price": 7.2,
+          "points": 13.98,
+          "points_this_gw": 4.8
+        },
+        "346": {
+          "web_name": "Calvert-Lewin",
+          "team": "LEE",
+          "position": "FWD",
+          "price": 6.0,
+          "points": 11.77,
+          "points_this_gw": 4.4
+        },
         "411": {
           "web_name": "Haaland",
           "team": "MCI",
           "position": "FWD",
           "price": 15.8,
-          "points": 14.76,
-          "points_this_gw": 4.59
+          "points": 14.84,
+          "points_this_gw": 4.38
         },
-        "261": {
-          "web_name": "Iwobi",
-          "team": "FUL",
-          "position": "MID",
-          "price": 5.4,
-          "points": 11.0,
-          "points_this_gw": 3.93
-        },
-        "650": {
-          "web_name": "Affengruber",
-          "team": "FUL",
-          "position": "DEF",
-          "price": 4.5,
-          "points": 10.5,
-          "points_this_gw": 3.43
-        },
-        "330": {
-          "web_name": "Bogle",
-          "team": "LEE",
-          "position": "DEF",
-          "price": 4.8,
-          "points": 6.97,
-          "points_this_gw": 3.37
-        },
-        "250": {
-          "web_name": "Leno",
-          "team": "FUL",
-          "position": "GKP",
-          "price": 4.5,
-          "points": 10.4,
-          "points_this_gw": 3.35
-        },
-        "400": {
-          "web_name": "Doku",
-          "team": "MCI",
-          "position": "MID",
-          "price": 7.5,
-          "points": 10.88,
-          "points_this_gw": 3.23
-        },
-        "60": {
-          "web_name": "Hill",
+        "68": {
+          "web_name": "Tavernier",
           "team": "BOU",
-          "position": "DEF",
-          "price": 5.6,
-          "points": 8.58,
-          "points_this_gw": 2.95
-        },
-        "13": {
-          "web_name": "Rice",
-          "team": "ARS",
-          "position": "MID",
-          "price": 7.5,
-          "points": 10.08,
-          "points_this_gw": 2.68
-        },
-        "79": {
-          "web_name": "Evanilson",
-          "team": "BOU",
-          "position": "FWD",
-          "price": 6.5,
-          "points": 8.56,
-          "points_this_gw": 2.64
-        },
-        "481": {
-          "web_name": "Anderson",
-          "team": "MCI",
-          "position": "MID",
-          "price": 6.2,
-          "points": 10.02,
-          "points_this_gw": 2.59
-        },
-        "15": {
-          "web_name": "Ødegaard",
-          "team": "ARS",
           "position": "MID",
           "price": 6.7,
-          "points": 9.25,
-          "points_this_gw": 2.56
-        },
-        "249": {
-          "web_name": "Barry",
-          "team": "EVE",
-          "position": "FWD",
-          "price": 5.7,
-          "points": 8.24,
-          "points_this_gw": 2.55
+          "points": 13.21,
+          "points_this_gw": 4.22
         },
         "4": {
           "web_name": "Gabriel",
           "team": "ARS",
           "position": "DEF",
           "price": 8.1,
-          "points": 8.61,
-          "points_this_gw": 2.53
+          "points": 12.72,
+          "points_this_gw": 4.01
         },
-        "385": {
-          "web_name": "Trafford",
-          "team": "LEE",
+        "597": {
+          "web_name": "Suzuki",
+          "team": "AVL",
           "position": "GKP",
-          "price": 5.0,
-          "points": 5.61,
-          "points_this_gw": 2.38
+          "price": 5.1,
+          "points": 10.86,
+          "points_this_gw": 3.7
         },
-        "229": {
-          "web_name": "Tarkowski",
-          "team": "EVE",
+        "60": {
+          "web_name": "Hill",
+          "team": "BOU",
           "position": "DEF",
-          "price": 6.2,
-          "points": 8.23,
-          "points_this_gw": 2.09
+          "price": 5.6,
+          "points": 11.32,
+          "points_this_gw": 3.62
+        },
+        "61": {
+          "web_name": "Truffert",
+          "team": "BOU",
+          "position": "DEF",
+          "price": 5.4,
+          "points": 11.1,
+          "points_this_gw": 3.62
+        },
+        "496": {
+          "web_name": "Kinsky",
+          "team": "TOT",
+          "position": "GKP",
+          "price": 4.4,
+          "points": 10.11,
+          "points_this_gw": 3.56
+        },
+        "183": {
+          "web_name": "Rudoni",
+          "team": "COV",
+          "position": "MID",
+          "price": 4.9,
+          "points": 10.82,
+          "points_this_gw": 3.49
+        },
+        "656": {
+          "web_name": "Mfuni",
+          "team": "COV",
+          "position": "DEF",
+          "price": 4.0,
+          "points": 9.17,
+          "points_this_gw": 2.99
+        },
+        "539": {
+          "web_name": "O'Nien",
+          "team": "SUN",
+          "position": "DEF",
+          "price": 3.9,
+          "points": 7.72,
+          "points_this_gw": 2.78
+        },
+        "185": {
+          "web_name": "Sakamoto",
+          "team": "COV",
+          "position": "MID",
+          "price": 4.8,
+          "points": 8.56,
+          "points_this_gw": 2.78
         }
       }
     }
