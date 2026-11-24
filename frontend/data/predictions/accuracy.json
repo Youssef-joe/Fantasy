@@ -1,9 +1,115 @@
 {
   "season": "2026-27",
-  "updated_at": "2026-11-23T17:51:41Z",
+  "updated_at": "2026-11-24T17:23:23Z",
   "top_n": 20,
-  "live": [],
-  "live_summary": null,
+  "live": [
+    {
+      "gameweek": 11,
+      "n": 502,
+      "mae": 1.502,
+      "baseline_mae": 1.589,
+      "top20_avg_points": 4.25,
+      "baseline_top20_avg_points": 3.55,
+      "oracle_top20_avg_points": 11.45,
+      "captain": {
+        "player_id": 411,
+        "web_name": "Haaland",
+        "team": "MCI",
+        "predicted": 6.98,
+        "actual": 2
+      },
+      "top_predicted": [
+        {
+          "player_id": 411,
+          "web_name": "Haaland",
+          "team": "MCI",
+          "position": "FWD",
+          "predicted": 6.98,
+          "actual": 2
+        },
+        {
+          "player_id": 166,
+          "web_name": "N.Jackson",
+          "team": "AVL",
+          "position": "FWD",
+          "predicted": 6.19,
+          "actual": 2
+        },
+        {
+          "player_id": 154,
+          "web_name": "Palmer",
+          "team": "CHE",
+          "position": "MID",
+          "predicted": 5.34,
+          "actual": 2
+        },
+        {
+          "player_id": 399,
+          "web_name": "Cherki",
+          "team": "MCI",
+          "position": "MID",
+          "predicted": 5.16,
+          "actual": 1
+        },
+        {
+          "player_id": 512,
+          "web_name": "Kudus",
+          "team": "TOT",
+          "position": "MID",
+          "predicted": 4.93,
+          "actual": 2
+        },
+        {
+          "player_id": 379,
+          "web_name": "Isak",
+          "team": "LIV",
+          "position": "FWD",
+          "predicted": 4.93,
+          "actual": 5
+        },
+        {
+          "player_id": 4,
+          "web_name": "Gabriel",
+          "team": "ARS",
+          "position": "DEF",
+          "predicted": 4.83,
+          "actual": 1
+        },
+        {
+          "player_id": 40,
+          "web_name": "Rogers",
+          "team": "CHE",
+          "position": "MID",
+          "predicted": 4.75,
+          "actual": 5
+        },
+        {
+          "player_id": 68,
+          "web_name": "Tavernier",
+          "team": "BOU",
+          "position": "MID",
+          "predicted": 4.65,
+          "actual": 8
+        },
+        {
+          "player_id": 79,
+          "web_name": "Evanilson",
+          "team": "BOU",
+          "position": "FWD",
+          "predicted": 4.64,
+          "actual": 6
+        }
+      ]
+    }
+  ],
+  "live_summary": {
+    "gameweeks": 1,
+    "top20_avg_points": 4.25,
+    "baseline_top20_avg_points": 3.55,
+    "oracle_top20_avg_points": 11.45,
+    "mae": 1.502,
+    "baseline_mae": 1.589
+  },
   "backtest": [
     {
       "gameweek": 7,
@@ -44,19 +150,19 @@
     {
       "gameweek": 11,
       "n": 674,
-      "mae": 1.163,
-      "baseline_mae": 1.219,
+      "mae": 1.179,
+      "baseline_mae": 1.235,
       "top20_avg_points": 4.25,
-      "baseline_top20_avg_points": 3.35,
-      "oracle_top20_avg_points": 10.85
+      "baseline_top20_avg_points": 3.55,
+      "oracle_top20_avg_points": 11.45
     }
   ],
   "backtest_summary": {
     "gameweeks": 5,
     "top20_avg_points": 4.84,
-    "baseline_top20_avg_points": 4.2,
-    "oracle_top20_avg_points": 10.53,
-    "mae": 1.102,
-    "baseline_mae": 1.192
+    "baseline_top20_avg_points": 4.24,
+    "oracle_top20_avg_points": 10.65,
+    "mae": 1.105,
+    "baseline_mae": 1.195
   }
 }
