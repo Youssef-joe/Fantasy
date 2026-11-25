@@ -2,7 +2,7 @@
   "season": "2026-27",
   "gameweek": 12,
   "budget": 100.0,
-  "generated_at": "2026-11-24T17:23:22Z",
+  "generated_at": "2026-11-25T17:00:55Z",
   "horizons": [
     {
       "squad": [
@@ -180,44 +180,44 @@
         154,
         40,
         166,
-        426,
+        124,
         366,
         379,
         68,
-        295,
         115,
-        597,
+        4,
+        350,
         60,
         61,
         496,
-        656,
-        173
+        91,
+        249
       ],
       "starting": [
-        597,
+        350,
+        4,
         60,
         115,
-        61,
         154,
         40,
-        426,
         366,
         68,
+        124,
         166,
         379
       ],
       "bench": [
         496,
-        295,
-        656,
-        173
+        249,
+        61,
+        91
       ],
       "captain": 154,
       "vice_captain": 40,
       "formation": "3-5-2",
       "cost": 100.0,
-      "points": 159.87,
-      "bench_points": 39.45,
+      "points": 159.46,
+      "bench_points": 43.02,
       "key": "multi",
       "label": "GW12–14",
       "gameweeks": [
@@ -250,13 +250,13 @@
           "points": 14.47,
           "points_this_gw": 4.91
         },
-        "426": {
-          "web_name": "B.Fernandes",
-          "team": "MUN",
+        "124": {
+          "web_name": "Groß",
+          "team": "BHA",
           "position": "MID",
-          "price": 11.6,
-          "points": 14.55,
-          "points_this_gw": 4.76
+          "price": 6.3,
+          "points": 12.89,
+          "points_this_gw": 4.65
         },
         "366": {
           "web_name": "Wirtz",
@@ -282,14 +282,6 @@
           "points": 13.43,
           "points_this_gw": 4.4
         },
-        "295": {
-          "web_name": "McBurnie",
-          "team": "HUL",
-          "position": "FWD",
-          "price": 5.5,
-          "points": 11.51,
-          "points_this_gw": 4.37
-        },
         "115": {
           "web_name": "De Cuyper",
           "team": "BHA",
@@ -298,19 +290,27 @@
           "points": 11.28,
           "points_this_gw": 3.89
         },
-        "597": {
-          "web_name": "Suzuki",
-          "team": "AVL",
+        "4": {
+          "web_name": "Gabriel",
+          "team": "ARS",
+          "position": "DEF",
+          "price": 8.1,
+          "points": 12.23,
+          "points_this_gw": 3.84
+        },
+        "350": {
+          "web_name": "A.Becker",
+          "team": "LIV",
           "position": "GKP",
-          "price": 5.1,
-          "points": 10.99,
-          "points_this_gw": 3.74
+          "price": 5.5,
+          "points": 11.05,
+          "points_this_gw": 3.71
         },
         "60": {
           "web_name": "Hill",
           "team": "BOU",
           "position": "DEF",
-          "price": 5.6,
+          "price": 5.7,
           "points": 11.32,
           "points_this_gw": 3.62
         },
@@ -330,21 +330,21 @@
           "points": 9.98,
           "points_this_gw": 3.47
         },
-        "656": {
-          "web_name": "Mfuni",
+        "91": {
+          "web_name": "Pinnock",
           "team": "COV",
           "position": "DEF",
-          "price": 4.0,
-          "points": 9.27,
-          "points_this_gw": 2.92
+          "price": 4.5,
+          "points": 10.19,
+          "points_this_gw": 3.23
         },
-        "173": {
-          "web_name": "Thomas",
-          "team": "COV",
-          "position": "DEF",
-          "price": 4.0,
-          "points": 8.69,
-          "points_this_gw": 2.79
+        "249": {
+          "web_name": "Barry",
+          "team": "EVE",
+          "position": "FWD",
+          "price": 5.7,
+          "points": 11.81,
+          "points_this_gw": 3.05
         }
       }
     }
