@@ -2,7 +2,7 @@
   "season": "2026-27",
   "gameweek": 12,
   "budget": 100.0,
-  "generated_at": "2026-11-25T17:00:55Z",
+  "generated_at": "2026-11-26T16:42:51Z",
   "horizons": [
     {
       "squad": [
@@ -44,7 +44,7 @@
       "captain": 154,
       "vice_captain": 40,
       "formation": "3-5-2",
-      "cost": 99.7,
+      "cost": 99.8,
       "points": 54.52,
       "bench_points": 15.17,
       "key": "gw",
@@ -105,7 +105,7 @@
           "web_name": "Isak",
           "team": "LIV",
           "position": "FWD",
-          "price": 9.3,
+          "price": 9.4,
           "points": 4.53,
           "points_this_gw": 4.53
         },
@@ -188,7 +188,7 @@
         4,
         350,
         60,
-        61,
+        112,
         496,
         91,
         249
@@ -209,15 +209,15 @@
       "bench": [
         496,
         249,
-        61,
+        112,
         91
       ],
       "captain": 154,
       "vice_captain": 40,
       "formation": "3-5-2",
-      "cost": 100.0,
+      "cost": 99.9,
       "points": 159.46,
-      "bench_points": 43.02,
+      "bench_points": 42.89,
       "key": "multi",
       "label": "GW12–14",
       "gameweeks": [
@@ -270,7 +270,7 @@
           "web_name": "Isak",
           "team": "LIV",
           "position": "FWD",
-          "price": 9.3,
+          "price": 9.4,
           "points": 13.45,
           "points_this_gw": 4.53
         },
@@ -314,13 +314,13 @@
           "points": 11.32,
           "points_this_gw": 3.62
         },
-        "61": {
-          "web_name": "Truffert",
-          "team": "BOU",
+        "112": {
+          "web_name": "Van Hecke",
+          "team": "TOT",
           "position": "DEF",
-          "price": 5.4,
-          "points": 11.04,
-          "points_this_gw": 3.56
+          "price": 5.2,
+          "points": 10.91,
+          "points_this_gw": 3.62
         },
         "496": {
           "web_name": "Kinsky",
