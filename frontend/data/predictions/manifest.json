@@ -1,11 +1,12 @@
 {
   "feed_version": 2,
   "season": "2026-27",
-  "latest_gameweek": 12,
+  "latest_gameweek": 13,
   "available_gameweeks": [
     11,
-    12
+    12,
+    13
   ],
-  "deadline_time": "2026-11-27T18:30:00Z",
-  "updated_at": "2026-11-27T16:27:41Z"
+  "deadline_time": "2026-12-01T18:30:00Z",
+  "updated_at": "2026-11-28T15:20:45Z"
 }
